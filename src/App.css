@@ -7,6 +7,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  
 }
 
 ::-webkit-scrollbar {
@@ -14,20 +15,27 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #0e771a8a;
+  background-color: #10cf2638;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #0e771a;
+  background-color: #03ca7e;
   border-radius: 150px;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: poppins, Impact;
 }
 
 .app {
   position: relative;
+  font-family: poppins, Impact;
+  letter-spacing: .8px;
+}
+
+.app.dark {
+  background: #18202e;
+  color: #fff;
 }
 
 .app .conteneur-onglets {
@@ -39,35 +47,57 @@ body {
   display: flex;
   justify-content: space-around;
   height: 5vh;
+  margin: 15px;
+  /* border: 1px solid black; */
 }
 
 .app .conteneur-onglets .onglets-blocs .tab {
-  border: 1px solid black;
+  /* border: 1px solid black; */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #dddbdb;
+  background: #fff;
   position: relative;
   cursor: pointer;
   width: 100%;
+  padding: 20px;
+  transition: all .4s;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgb(105, 99, 99);
+  letter-spacing: 1px;
+  border-radius: 8px;
 }
 
-.app .conteneur-onglets .onglets-blocs .tab:nth-child(2), .conteneur-onglets .onglets-blocs .tab:nth-child(1) {
-  border-right: 1px solid rgba(0, 0, 0, 0.158);
+.app .conteneur-onglets .onglets-blocs .tab.dark {
+  background: #18202e;
 }
 
-.app .conteneur-onglets .onglets-blocs .tab.active::before {
+.app .conteneur-onglets .onglets-blocs .tab::before {
   content: "";
   position: absolute;
-  width: 100%;
-  height: 6px;
-  background: #012557;
-  top: -2px;
+  width: 0%;
+  height: 2px;
+  background: #07da5f;
+  bottom: -2px;
 }
 
+/* .app .conteneur-onglets .onglets-blocs .tab.active::before {
+  width: 90%;
+  transition: all .3s;
+} */
+
+
 .app .conteneur-onglets .onglets-blocs .tab.active {
-  background: #fff;
+  background: #dddbdbb9;
   border: none;
+  color: #03bb75;
+  transition: all .4s;
+  /* text-shadow: 1px 1px 1px 5px #0069d9; */
+}
+
+.app .conteneur-onglets .onglets-blocs .tab.active.dark {
+  color: #fff;
 }
 
 .erreur-message {

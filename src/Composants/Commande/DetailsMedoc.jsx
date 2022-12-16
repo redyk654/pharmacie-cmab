@@ -13,41 +13,41 @@ export default function DetailsMedoc(props) {
                     <Fragment key={item.id}>
                         <div className="box">
                             <div className="detail-item">
-                                <label htmlFor="">Code</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Code</label>
                                 <input type="text" value={`${item.code}`}/>
                             </div>
                             <div className="detail-item">
-                                <label htmlFor="">Stock Minimum</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Stock Minimum</label>
                                 <input type="text" value={item.min_rec} />
                             </div>
                         </div>
                         <div className="box">
                             <div className="detail-item">
-                                <label htmlFor="">Désignation</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Désignation</label>
                                 <input type="text" value={`${item.designation}`} />
                             </div>
                             <div className="detail-item">
-                                <label htmlFor="">Stock Disponible</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Stock Disponible</label>
                                 <input style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}} type="text" value={item.en_stock} />
                             </div>
                         </div>
                         <div className="box">
                             <div className="detail-item">
-                                <label htmlFor="">Prix Unitaire</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Prix Unitaire</label>
                                 <input type="text" value={item.pu_vente} />
                             </div>
                             <div className="detail-item">
-                                <label htmlFor="">Conditionnement</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Conditionnement</label>
                                 <input type="text" value={item.conditionnement} />
                             </div>
                         </div>
                         <div className="box">
                             <div className="detail-item">
-                                <label htmlFor="">Date Péremption</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Date Péremption</label>
                                 <input type="text" value={item.date_peremption} />
                             </div>
                             <div className="detail-item">
-                                <label htmlFor="">catégorie</label>
+                                <label htmlFor="" className='dark' style={{color: '#fff'}}>Forme</label>
                                 <input type="text" value={item.categorie} />
                             </div>
                         </div>

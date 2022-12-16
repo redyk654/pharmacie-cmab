@@ -1,12 +1,15 @@
 .entete {
-    background: #0e771a;
+    background: #03ca7e;
     color: #f1f1f1;
-    /* height: 11vh; */
-    display: flex;
-    /* align-items: center; */
-    /* justify-content: center; */
-    position: relative;
     transition: .2s;
+}
+
+.entete .deconnection {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    /* border: 1px solid red; */
 }
 
 .entete h3 {
@@ -19,22 +22,14 @@
     padding-top: 2px;
 }
 
-.entete h1 {
-    width: 100%;
-    padding-left: 80px;
-}
-
-
 .entete button {
-    display: block;
     color: #012557;
     font-size: 18px;
-    margin-top: 25px;
-    width: 42%;
+    height: 4vh;
     cursor: pointer;
     margin-left: 15px;
 }
 
 .entete .box-entete {
-    width: 50%;
+    width: 100%;
 }

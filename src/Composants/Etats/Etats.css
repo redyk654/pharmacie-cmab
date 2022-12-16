@@ -4,7 +4,7 @@
     border-collapse: collapse;
 }
 
-.etats button {
+/* .etats button {
     color: #fff;
     background: #012557;
     font-size: 18px;
@@ -13,10 +13,10 @@
     width: 10%;
     height: 4vh;
     cursor: pointer;
-}
+} */
 
 .etats h1 {
-    background: #0e771a;
+    background: #03ca7e;
     color: #fff;
     text-align: center;
     padding: 5px 0px;
@@ -25,21 +25,21 @@
 .etats .table-commandes {
     height: 76vh;
     width: 100%;
-    border: 1px solid #0e771a;
+    border: 1px solid #03ca7e;
     overflow-y: auto;
     margin-top: 10px;
 }
 
 .etats .table-commandes table thead {
     font-weight: 600;
-    background: #0e771a;
+    background: #03ca7e;
     color: #f1f1f1;
     position: sticky;
     top: 0;
 }
 
 .etats .table-commandes table tbody tr:hover {
-    background-color: #0e771a;
+    background-color: #038654;
     color: #f1f1f1;
     font-weight: 600;
 }
@@ -57,4 +57,37 @@
 .etats .table-commandes .entete-historique {
     width: 100%;
     text-align: center;
+}
+
+.etats p input, .etats p label {
+    display: block;
+}
+
+.etats p {
+    width: 26%;
+    margin: auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 5px;
+    /* align-items: center; */
+}
+
+.bootstrap-btn {
+	display: inline-block;
+	font-weight: 500;
+	color: #212529;
+	text-align: center;
+	border: 1px solid transparent;
+	/* padding: .275rem .75rem; */
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	color: #fff;
+	background-color: #007bff;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 10%;
+    height: 5.5vh;
+    cursor: pointer;
+
 }

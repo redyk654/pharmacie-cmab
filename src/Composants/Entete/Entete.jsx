@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import './Entete.css';
 import Recette from '../Recette/Recette';
 import ReactToPrint from 'react-to-print';
 import Modal from 'react-modal';
+import { FaMoon, FaSignOutAlt, FaSun } from 'react-icons/fa';
+import { ContextChargement } from '../../Context/Chargement';
 
 const customStyles1 = {
     content: {
@@ -39,6 +41,9 @@ export default function Entete(props) {
         confirmation: ''
     }
 
+    let elt = useRef();
+    const {darkLight, toogleTheme} = useContext(ContextChargement);
+
     const [recettejour, setRecetteJour] = useState({recette: ''});
     const [modalReussi, setModalReussi] = useState(false);
     const [nouveauMdp, setNouveauMdp] = useState(utilisateur);
@@ -58,10 +63,10 @@ export default function Entete(props) {
 
         const req2 = new XMLHttpRequest();
         if (heure.getHours() <= 12 && heure.getHours() >= 6) {
-            req2.open('POST', 'http://serveur/backend-cma/recette_jour.php?service=nuit');
+            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=nuit');
             req2.send(data);
         } else if (heure.getHours() >= 14 && heure.getHours() <= 20) {
-            req2.open('POST', 'http://serveur/backend-cma/recette_jour.php?service=jour');
+            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=jour');
             req2.send(data);
         }
 
@@ -81,7 +86,7 @@ export default function Entete(props) {
         data.append('montant', recettejour.recette);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cma/gestion_recette.php');
+        req.open('POST', 'http://serveur/backend-cmab/gestion_recette.php');
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {
@@ -105,7 +110,7 @@ export default function Entete(props) {
             data.append('nouveau', nouveau);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://serveur/backend-cma/modif_password.php');
+            req.open('POST', 'http://serveur/backend-cmab/modif_password.php');
 
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
@@ -149,7 +154,7 @@ export default function Entete(props) {
     }
 
     return (
-        <header className="entete" style={{height: `${slide ? '20vh' : '10vh'}`}}>
+        <header className="entete" style={{height: `${slide ? '18vh' : '18vh'}`}}>
             <Modal
                 isOpen={modalReussi}
                 style={customStyles2}
@@ -190,17 +195,28 @@ export default function Entete(props) {
                 </form>
             </Modal>
             <div className="box-entete">
+                <h1 style={{textAlign: 'center', width: '98vw', fontSize: '29px'}}>
+                    © CMA de Bepanda
+                </h1>
                 <h3 onClick={() => setSlide(!slide)}>{props.nomConnecte.toUpperCase()}</h3>
-                <div>
-                    <button onClick={() => {deconnection()}}>Déconnection</button>
-                </div>
-                <div>
-                    <button style={{display: `${slide ? 'inline' : 'none'}`}} onClick={() => {setModalConfirmation(true)}} >Modifier mot de passe</button>
+                <div className='deconnection' style={{display: `${slide ? 'flex' : 'flex'}`,}}>
+                    <div style={{cursor: 'pointer'}} onClick={deconnection} title="deconnection" >
+                        <FaSignOutAlt size={24} />
+                    </div>
+                    <div>
+                        <button style={{display: `${slide ? 'inline' : 'inline'}`}} onClick={() => {setModalConfirmation(true)}} >Modifier</button>
+                    </div>
+                    <button 
+                        ref={elt} 
+                        style={{cursor: 'pointer', marginLeft: '15px', background: 'none', border: 'none', color: '#fff'}}
+                        onClick={toogleTheme} 
+                        title="thème"
+                        >
+                        {darkLight ? <FaSun size={24} /> : <FaMoon size={24} />}
+                        
+                    </button>
                 </div>
             </div>
-            <h1 style={{}}>
-                © CMA de Bepanda
-            </h1>
             <div style={{display: 'none'}}>
                 <Recette
                     ref={componentRef}

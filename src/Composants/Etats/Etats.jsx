@@ -4,12 +4,15 @@ import { ContextChargement } from '../../Context/Chargement';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import ReactToPrint from 'react-to-print';
 import ImprimerEtat from './ImprimerEtat';
+import { useSpring, animated } from 'react-spring';
 
 export default function Etats(props) {
 
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+
     const componentRef = useRef();
     const admin = "admin";
-    const date_e = new Date('2022-12-15');
+    const date_e = new Date('2024-12-15');
     const date_j = new Date();
 
     let date_select1 = useRef();
@@ -61,12 +64,12 @@ export default function Etats(props) {
 
             const req = new XMLHttpRequest();
             if (props.role !== admin) {
-                req.open('POST', `http://serveur/backend-cma/etats.php?vendeur=${props.nomConnecte}`);
+                req.open('POST', `http://serveur/backend-cmab/etats.php?vendeur=${props.nomConnecte}`);
             } else {
                 if (filtre) {
-                    req.open('POST', `http://serveur/backend-cma/etats.php?vendeur=${caissier}`);
+                    req.open('POST', `http://serveur/backend-cmab/etats.php?vendeur=${caissier}`);
                 } else {
-                    req.open('POST', `http://serveur/backend-cma/etats.php`);
+                    req.open('POST', `http://serveur/backend-cmab/etats.php`);
                 }
             }
             
@@ -150,7 +153,7 @@ export default function Etats(props) {
         // Récupération des comptes
 
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://serveur/backend-cma/recuperer_comptes.php');
+        req.open('GET', 'http://serveur/backend-cmab/recuperer_comptes.php');
 
         req.addEventListener('load', () => {
             if(req.status >= 200 && req.status < 400) {
@@ -206,95 +209,97 @@ export default function Etats(props) {
     }
 
     return (
-        <section className="etats">
-            <h1>Historique des ventes</h1>
-            <div className="container-historique">
-                <div className="table-commandes">
-                    <div className="entete-historique">
-                        <div>
-                            <p>
-                                <label htmlFor="">Du : </label>
-                                <input type="date" ref={date_select1} />
-                                <input type="time" ref={heure_select1} />
-                            </p>
-                            <p>
-                                <label htmlFor="">Au : </label>
-                                <input type="date" ref={date_select2} />
-                                <input type="time" ref={heure_select2} />
-                            </p>
-                            <p>
-                                {
-                                props.role === admin && 
-                                <Fragment>
-                                    <label htmlFor="filtre">Filtrer : </label>
-                                    <input type="checkbox" id="filtre" checked={filtre} onChange={(e) => setFiltre(!filtre)} />
-                                </Fragment>
-                                }
-                            </p>
-                            <p style={{display: `${filtre ? 'block' : 'none'}`}}>
-                            <p style={{display: 'none'}}>
-                                <label htmlFor="non_paye">non payés : </label>
-                                <input type="checkbox" id="non_paye" checked={non_paye} onChange={(e) => setNonPaye(!non_paye)} />
-                            </p>
-                            <label htmlFor="">Vendeur : </label>
-                                <select name="caissier" id="caissier" onChange={(e) => setCaissier(e.target.value)}>
-                                    {props.role !== admin ? 
-                                    <option value={props.nomConnecte}>{props.nomConnecte.toUpperCase()}</option> :
-                                    listeComptes.map(item => (
-                                        <option value={item.nom_user}>{item.nom_user.toUpperCase()}</option>
-                                    ))}
-                                </select>
-                            </p>
+        <animated.div style={props1}>
+            <section className="etats">
+                <h1>Historique des ventes</h1>
+                <div className="container-historique">
+                    <div className="table-commandes">
+                        <div className="entete-historique">
+                            <div>
+                                <p>
+                                    <label htmlFor="">Du : </label>
+                                    <input type="date" ref={date_select1} />
+                                    <input type="time" ref={heure_select1} />
+                                </p>
+                                <p>
+                                    <label htmlFor="">Au : </label>
+                                    <input type="date" ref={date_select2} />
+                                    <input type="time" ref={heure_select2} />
+                                </p>
+                                <p>
+                                    {
+                                    props.role === admin && 
+                                    <Fragment>
+                                        <label htmlFor="filtre">Filtrer : </label>
+                                        <input type="checkbox" id="filtre" checked={filtre} onChange={(e) => setFiltre(!filtre)} />
+                                    </Fragment>
+                                    }
+                                </p>
+                                <p style={{display: `${filtre ? 'block' : 'none'}`}}>
+                                <p style={{display: 'none'}}>
+                                    <label htmlFor="non_paye">non payés : </label>
+                                    <input type="checkbox" id="non_paye" checked={non_paye} onChange={(e) => setNonPaye(!non_paye)} />
+                                </p>
+                                <label htmlFor="">Vendeur : </label>
+                                    <select name="caissier" id="caissier" onChange={(e) => setCaissier(e.target.value)}>
+                                        {props.role !== admin ? 
+                                        <option value={props.nomConnecte}>{props.nomConnecte.toUpperCase()}</option> :
+                                        listeComptes.map(item => (
+                                            <option value={item.nom_user}>{item.nom_user.toUpperCase()}</option>
+                                        ))}
+                                    </select>
+                                </p>
+                            </div>
+                            <button className='bootstrap-btn' onClick={rechercherHistorique}>rechercher</button>
+                            <div>Recette total : <span style={{fontWeight: '700'}}>{recetteTotal ? recetteTotal + ' Fcfa' : '0 Fcfa'}</span></div>
                         </div>
-                        <button onClick={rechercherHistorique}>rechercher</button>
-                        <div>Recette total : <span style={{fontWeight: '700'}}>{recetteTotal ? recetteTotal + ' Fcfa' : '0 Fcfa'}</span></div>
-                    </div>
-                    <div className='erreur-message'>{messageErreur}</div>
+                        <div className='erreur-message'>{messageErreur}</div>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                {/* <td>Le</td>
-                                <td>À</td>
-                                <td>Par</td> */}
-                                <td>Désignation</td>
-                                <td>Qte sortie</td>
-                                <td>Montant</td>
-                                {/* <td>Status</td> */}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {historique.length > 0 ? historique.map(item => (
+                        <table>
+                            <thead>
                                 <tr>
-                                    {/* <td>{mois(item.date_heure.substring(0, 10))}</td>
-                                    <td>{item.date_heure.substring(11)}</td>
-                                    <td>{item.nom_vendeur}</td> */}
-                                    <td>{item.designation}</td>
-                                    <td>{item.quantite}</td>
-                                    <td>{item.prix_total + ' Fcfa'}</td>
-                                    {/* <td>{item.status_vente}</td> */}
+                                    {/* <td>Le</td>
+                                    <td>À</td>
+                                    <td>Par</td> */}
+                                    <td>Désignation</td>
+                                    <td>Qte sortie</td>
+                                    <td>Montant</td>
+                                    {/* <td>Status</td> */}
                                 </tr>
-                            )) : null}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {historique.length > 0 ? historique.map(item => (
+                                    <tr>
+                                        {/* <td>{mois(item.date_heure.substring(0, 10))}</td>
+                                        <td>{item.date_heure.substring(11)}</td>
+                                        <td>{item.nom_vendeur}</td> */}
+                                        <td>{item.designation}</td>
+                                        <td>{item.quantite}</td>
+                                        <td>{item.prix_total + ' Fcfa'}</td>
+                                        {/* <td>{item.status_vente}</td> */}
+                                    </tr>
+                                )) : null}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style={{textAlign: 'center'}}>
+                        <ReactToPrint
+                            trigger={() => <button className='bootstrap-btn' style={{color: '#f1f1f1', height: '5vh', width: '20%', cursor: 'pointer', fontSize: 'large', fontWeight: '600'}}>Imprimer</button>}
+                            content={() => componentRef.current}
+                        />
+                    </div>
                 </div>
-                <div style={{textAlign: 'center'}}>
-                    <ReactToPrint
-                        trigger={() => <button style={{color: '#f1f1f1', height: '5vh', width: '20%', cursor: 'pointer', fontSize: 'large', fontWeight: '600'}}>Imprimer</button>}
-                        content={() => componentRef.current}
+                <div style={{display: 'none'}}>
+                    <ImprimerEtat
+                        ref={componentRef}
+                        dateDepart={dateDepart}
+                        dateFin={dateFin}
+                        recetteTotal={recetteTotal}
+                        historique={historique}
+                        caissier={caissier}
                     />
                 </div>
-            </div>
-            <div style={{display: 'none'}}>
-                <ImprimerEtat
-                    ref={componentRef}
-                    dateDepart={dateDepart}
-                    dateFin={dateFin}
-                    recetteTotal={recetteTotal}
-                    historique={historique}
-                    caissier={caissier}
-                />
-            </div>
-        </section>
+            </section>
+        </animated.div>
     )
 }

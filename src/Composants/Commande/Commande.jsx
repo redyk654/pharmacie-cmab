@@ -10,16 +10,31 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import ReactToPrint from 'react-to-print';
 import Facture from '../Facture/Facture';
+import { Toaster, toast } from "react-hot-toast";
+import { FaPlusSquare } from "react-icons/fa";
+import { useSpring, animated } from 'react-spring';
+
+// Modal.defaultStyles.overlay.backgroundColor = '#18202ebe';
+
 // Styles pour las fenêtres modales
 const customStyles1 = {
     content: {
-      top: '15%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+        top: '40%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        background: '#18202e',
+        color: '#fff',
+        height: '45vh',
+        width: '38vw',
+        display: 'flex',
+        flexDirection: 'column',
+      //   alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '30px',
+        border: '1px solid lightgray'
     },
 };
 
@@ -55,9 +70,10 @@ const customStyles4 = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+      background: '#04a567',
       width: '400px',
-      height: '75vh'
+      height: '75vh',
+      borderRadius: '10px'
     }, 
 };
 
@@ -72,15 +88,19 @@ const stylePatient = {
 
 export default function Commande(props) {
 
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+    Modal.defaultStyles.overlay.backgroundColor = '#18202ebe';
+
+
     const componentRef = useRef();
     const elt = useRef();
     const elt2 = useRef();
     const refPatient= useRef();
     const assuranceDefaut = 'aucune';
-    const {chargement, stopChargement, startChargement} = useContext(ContextChargement);
+    const {chargement, stopChargement, startChargement, darkLight} = useContext(ContextChargement);
     let interval = null;
 
-    const date_e = new Date('2022-12-15');
+    const date_e = new Date('2024-12-15');
     const date_j = new Date();
 
     const [listeMedoc, setListeMedoc] = useState([]);
@@ -111,6 +131,7 @@ export default function Commande(props) {
     const [typeAssurance, setTypeAssurance] = useState(0);
     const [statu, setStatu] = useState('done');
     const [rafraichir, setRafraichir] = useState(false);
+    const [enCours, setEncours] = useState(false);
 
     useEffect(() => {
         startChargement();
@@ -205,7 +226,7 @@ export default function Commande(props) {
     const fetchProduits = () => {
         // Récupération des médicaments dans la base via une requête Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://serveur/backend-cma/recuperer_medoc.php');
+        req.open('GET', 'http://serveur/backend-cmab/recuperer_medoc.php');
         req.addEventListener("load", () => {
             if (req.status >= 200 && req.status < 400) { // Le serveur a réussi à traiter la requête
                 setMessageErreur('');
@@ -234,11 +255,11 @@ export default function Commande(props) {
         const medocSelectionne = listeMedoc.filter(item => (item.id == e.target.value));
         setMedoSelect(medocSelectionne);
         if (parseInt(medocSelectionne[0].en_stock) === 0) {
-            setAlerteStock('le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner');
-            setModalAlerte(true);
+            var msgAlerteStock = 'le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner';
+            toastAlerteStock(msgAlerteStock, '#dd4c47');
         } else if (parseInt(medocSelectionne[0].en_stock) < parseInt(medocSelectionne[0].min_rec)) {
-            setAlerteStock('Vous serez bientôt à cour de ' + medocSelectionne[0].designation + ' ! Pensez à vous approvisionner');
-            setModalAlerte(true);
+            var msgAlerteStock = medocSelectionne[0].designation + ' bientôt en rupture de stock ! Pensez à vous approvisionner';
+            toastAlerteStock(msgAlerteStock, '#FFB900');
         }
     }
 
@@ -327,12 +348,12 @@ export default function Commande(props) {
 
     const sauvegarder = () => {
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cma/backup.php');
+        req.open('POST', 'http://serveur/backend-cmab/backup.php');
         req.send();
 
         req.addEventListener('load', () => {
             setMessageErreur('');
-        })
+        });
 
         // req.addEventListener("error", function () {
         //     // La requête n'a pas réussi à atteindre le serveur
@@ -367,16 +388,16 @@ export default function Commande(props) {
         data.append('statu', statu);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cma/factures_pharmacie.php');
+        req.open('POST', 'http://serveur/backend-cmab/factures_pharmacie.php');
 
         req.addEventListener('load', () => {
             setMedoSelect(false);
             setMessageErreur('');
-            // Activation de la fenêtre modale qui indique la réussite de la commmande
-            setModalReussi(true);
-            // Désactivation de la fenêtre modale de confirmation
+            toastVenteEnregistrer();
             setModalConfirmation(false);
+            setEncours(false);
             annulerCommande();
+            console.log(req.responseText);
         });
 
         req.addEventListener("error", function () {
@@ -392,7 +413,7 @@ export default function Commande(props) {
     //     data.append('catego', 'pharmacie');
 
     //     const req = new XMLHttpRequest();
-    //     req.open('POST', 'http://serveur/backend-cma/data_assurance.php');
+    //     req.open('POST', 'http://serveur/backend-cmab/data_assurance.php');
 
     //     req.send(data);
 
@@ -409,6 +430,7 @@ export default function Commande(props) {
 
     const validerCommande = () => {
 
+        setEncours(true)
         enregisterPatient();
 
         /* 
@@ -452,7 +474,7 @@ export default function Commande(props) {
 
                 // Envoi des données
                 const req2 = new XMLHttpRequest();
-                req2.open('POST', 'http://serveur/backend-cma/maj_historique.php');
+                req2.open('POST', 'http://serveur/backend-cmab/maj_historique.php');
                 
                 // Une fois la requête charger on vide tout les états
                 req2.addEventListener('load', () => {
@@ -522,7 +544,7 @@ export default function Commande(props) {
         setModalPatient(true);
 
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://serveur/backend-cma/gestion_patients.php');
+        req.open('GET', 'http://serveur/backend-cmab/gestion_patients.php');
 
         req.addEventListener('load', () => {
             refPatient.current.focus();
@@ -545,7 +567,7 @@ export default function Commande(props) {
 
         const req = new XMLHttpRequest();
 
-        req.open('GET', `http://serveur/backend-cma/rechercher_patient.php?str=${e.target.value}`);
+        req.open('GET', `http://serveur/backend-cmab/rechercher_patient.php?str=${e.target.value}`);
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {
@@ -595,7 +617,7 @@ export default function Commande(props) {
                 data.append('type_assurance', 0);
                 
                 const req = new XMLHttpRequest();
-                req.open('POST', 'http://serveur/backend-cma/gestion_patients.php');
+                req.open('POST', 'http://serveur/backend-cmab/gestion_patients.php');
 
                 req.addEventListener("load", function () {
                     // La requête n'a pas réussi à atteindre le serveur
@@ -639,7 +661,39 @@ export default function Commande(props) {
         setModalAlerte(false);
     }
 
+    const afterModal = () => {
+        customStyles1.content.color = darkLight ? '#fff' : '#000';
+        customStyles1.content.background = darkLight ? '#18202e' : '#fff';
+    }
+
+    const toastVenteEnregistrer = () => {
+        toast.success("Vente enregistré !", {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '18px',
+                backgroundColor: '#fff',
+                letterSpacing: '1px'
+            },
+            
+        });
+    }
+
+    const toastAlerteStock = (msg, bg) => {
+        toast.error(msg, {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '18px',
+                color: '#fff',
+                backgroundColor: bg,
+                letterSpacing: '1px'
+            },
+            
+        });
+    }
+
     return (
+        <animated.div style={props1}>
+        <div><Toaster/></div>
         <section className="commande">
             <Modal
                 isOpen={modalPatient}
@@ -663,10 +717,19 @@ export default function Commande(props) {
                 style={customStyles1}
                 contentLabel="validation commande"
             >
-                <h2 style={{color: '#fff'}}>êtes-vous sûr de vouloir valider la vente ?</h2>
-                <div style={{textAlign: 'center'}} className='modal-button'>
-                    <button ref={elt2}  style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalConfirmation}>Annuler</button>
-                    <button ref={elt} className="valider" style={{width: '20%', height: '5vh', cursor: 'pointer'}} onClick={validerCommande}>Confirmer</button>
+                <h2 style={{color: `${darkLight ? '#fff' : '#18202e'}`, textAlign: 'center', marginBottom: '30px'}}>Confirmation</h2>
+                <p style={{fontWeight: '600', textAlign: 'center', opacity: '.8'}}>
+                    Vous allez valider la vente. Etes-vous sûr ?
+                </p>
+                <div style={{textAlign: 'center', marginTop: '12px'}} className=''>
+                    {enCours ? 
+                    <Loader type="TailSpin" color="#03ca7e" height={50} width={50}/> 
+                        : 
+                    <div>
+                        <button ref={elt2} className='bootstrap-btn annuler' style={{width: '30%', height: '5vh', cursor: 'pointer', marginRight: '10px', borderRadius: '15px'}} onClick={fermerModalConfirmation}>Annuler</button>
+                        <button ref={elt} className="bootstrap-btn valider" style={{width: '30%', height: '5vh', cursor: 'pointer', borderRadius: '15px'}} onClick={validerCommande}>Confirmer</button>
+                    </div>
+                    }
                 </div>
             </Modal>
             <Modal
@@ -689,8 +752,8 @@ export default function Commande(props) {
                 <div className="liste-medoc">
                     <h1>Liste de produits</h1>
                     <ul>
-                        {chargement ? <div className="loader"><Loader type="Circles" color="#0e771a" height={100} width={100}/></div> : listeMedoc.map(item => (
-                            <li value={item.id} key={item.id} onClick={afficherInfos} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
+                        {chargement ? <div className="loader"><Loader type="TailSpin" color="#03ca7e" height={100} width={100}/></div> : listeMedoc.map(item => (
+                            <li value={item.id} key={item.id} onClick={afficherInfos} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) || parseInt(item.en_stock) === 0 ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
                         ))}
                     </ul>
                 </div>
@@ -717,10 +780,13 @@ export default function Commande(props) {
                 <div className="box">
                     <div className="detail-item">
                         <input type="text" name="qteDesire" value={qteDesire} onChange={(e) => {setQteDesire(e.target.value)}} autoComplete='off' />
-                        <button onClick={ajouterMedoc}>ajouter</button>
+                        {/* <button onClick={ajouterMedoc}>ajouter</button> */}
+                        <div onClick={ajouterMedoc} style={{display: 'inline-block', marginTop: '6px', cursor: 'pointer'}}>
+                            <FaPlusSquare color='#00BCD4' size={35} />
+                        </div>
                     </div>
                     <div style={{textAlign: 'center'}}>
-                        <button style={{backgroundColor: '#6d6f94', width: '30%'}} onClick={infosPatient}>Infos du patient</button>
+                        <button className='btn-patient' onClick={infosPatient}>Infos du patient</button>
                     </div>
                     <div style={{textAlign: 'center'}}>
                         {nomPatient ? (
@@ -773,8 +839,8 @@ export default function Commande(props) {
                         <div>
                             Net à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{qtePrixTotal.a_payer ? qtePrixTotal.a_payer + ' Fcfa': 0 + ' Fcfa'}</span>
                         </div>
-                        <button onClick={annulerCommande}>Annnuler</button>
-                        <button onClick={() => { if(medocCommandes.length > 0 && nomPatient) {setModalConfirmation(true)} else {setMessageErreur("Entrez le nom et le prénom du patient")}}}>Valider</button>
+                        <button className='bootstrap-btn annuler' onClick={annulerCommande}>Annnuler</button>
+                        <button className='bootstrap-btn valider' onClick={() => { if(medocCommandes.length > 0 && nomPatient) {afterModal();setModalConfirmation(true);} else {setMessageErreur("Entrez le nom et le prénom du patient")}}}>Valider</button>
 
                     </div>
                     <div>
@@ -795,5 +861,6 @@ export default function Commande(props) {
                 </div>
             </div>
         </section>
+        </animated.div>
     )
 }

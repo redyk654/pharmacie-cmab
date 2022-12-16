@@ -34,7 +34,7 @@ export default function Historique(props) {
     const {chargement, stopChargement, startChargement} = useContext(ContextChargement);
 
     let date_filtre = useRef();
-    const date_e = new Date('2022-12-15');
+    const date_e = new Date('2024-12-15');
     const date_j = new Date();
 
     const [listeHistorique, setListeHistorique] = useState([]);
@@ -60,7 +60,7 @@ export default function Historique(props) {
         if (date_j.getTime() <= date_e.getTime()) {
             // Récupération de la liste de produits via Ajax
             const req = new XMLHttpRequest();
-            req.open('GET', 'http://serveur/backend-cma/recuperer_historique.php');
+            req.open('GET', 'http://serveur/backend-cmab/recuperer_historique.php');
 
             req.addEventListener('load', () => {
                 const result = JSON.parse(req.responseText);
@@ -96,7 +96,7 @@ export default function Historique(props) {
             data.append('pu_vente', medocSelectionne[0].pu_vente);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://serveur/backend-cma/gestion_stock.php?rem=inventaire');
+            req.open('POST', 'http://serveur/backend-cmab/gestion_stock.php?rem=inventaire');
     
             req.addEventListener('load', () => {
                 fermerModalConfirmation();
@@ -163,7 +163,7 @@ export default function Historique(props) {
         // data1.append('id_prod', medocSelectionne[0].id);
 
         // const req1 = new XMLHttpRequest();
-        // req1.open('POST', 'http://serveur/backend-cma/recuperer_historique.php');
+        // req1.open('POST', 'http://serveur/backend-cmab/recuperer_historique.php');
         // req1.addEventListener('load', () => {
         //     if (req1.status >= 200 && req1.status < 400) {
         //         const result = JSON.parse(req1.responseText);
@@ -188,7 +188,7 @@ export default function Historique(props) {
         data1.append('id', medocSelectionne[0].id);
 
         const req1 = new XMLHttpRequest();
-        req1.open('POST', 'http://serveur/backend-cma/gestion_stock.php');
+        req1.open('POST', 'http://serveur/backend-cmab/gestion_stock.php');
         req1.addEventListener('load', () => {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);

@@ -7,14 +7,14 @@ export default function AfficherBordereau(props) {
                 <thead>
                     <tr>
                         <td>Code</td>
-                        <td>Désignation</td>
-                        <td>Catégorie</td>
-                        <td>Conditionnement</td>
+                        <td>Des</td>
+                        <td>Cat</td>
+                        <td>Condi</td>
                         <td>Qté commandés</td>
                         <td>Pu achat</td>
                         <td>Pu vente</td>
                         <td>Date exp</td>
-                        <td>Stock minimum</td>
+                        <td>Stock min</td>
                     </tr>
                 </thead>
                 <tbody>

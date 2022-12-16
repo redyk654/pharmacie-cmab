@@ -5,8 +5,8 @@ const isDev = require('electron-is-dev')
 function createWindow () {
   const win = new BrowserWindow({
     width: 1000,
-    height: 640,
-    minWidth: 850,
+    height: 670,
+    minWidth: 1100,
     minHeight: 520,
     icon: path.join(__dirname, '../build/pharmacie_icon.ico'),
     webPreferences: {
@@ -18,8 +18,8 @@ function createWindow () {
       isDev ? 'http:localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`
     )
 
-    win.setMenuBarVisibility(false)
-    win.removeMenu()
+    // win.setMenuBarVisibility(false)
+    // win.removeMenu()
 }
 
 app.whenReady().then(() => {

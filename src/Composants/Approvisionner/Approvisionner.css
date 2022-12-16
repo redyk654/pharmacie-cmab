@@ -20,8 +20,9 @@
 
 .approvisionner h1 {
     font-size: larger;
-    background: #0e771a;
-    color: #f1f1f1;
+    background: #03ca7e;
+    border-radius: 10px 10px 0px 0px;
+    color: #fff;
     text-align: center;
 }
 
@@ -30,7 +31,7 @@
     height: 4vh;
     outline: none;
     border-radius: 5px;
-    color: #0e771a;
+    color: #038654;
     font-size: 17px;
     margin-bottom: 5px;
 }
@@ -43,31 +44,32 @@
 }
 
 .approvisionner ul li {
-    color: #0e771a;
+    color: #038654;
     font-weight: 600;
     width: 100%;
     padding: 0px 5px;
 }
 
 .approvisionner ul li:hover {
-    background-color: #0e771a;
+    background-color: #038654;
     color: #f1f1f1;
     cursor: pointer;
 }
 
 .approvisionner .details-approv form {
     display: grid;
-    border: 1px solid green;
+    border: 1px solid #038654;
     margin: 0px 5px;
 }
 
-.approvisionner .details-approv .box-container {
+ .box-container {
     display: flex;
 }
 
-.approvisionner .details-approv .box {
+.box-container .box {
     margin: 10px;
     width: 20%;
+    margin: 15px;
 }
 
 @media screen and (max-width: 1120px) {
@@ -77,7 +79,7 @@
 }
 
 .approvisionner .details-approv label {
-    color: #0e771a;
+    color: #038654;
 }
 
 .approvisionner .details-approv input, .approvisionner .details-approv select{
@@ -85,31 +87,78 @@
     height: 4vh;
     font-size: 15px;
     font-weight: 600;
-    color: #0e771a;
+    color: #038654;
+}
+
+.approvisionner .details-approv input {
+    border-radius: 5px;
+    padding: 4px;
+}
+
+.approvisionner .details-approv input[type=text]:focus, 
+.approvisionner .details-approv input[type=number]:focus {
+    box-shadow: inset 0 0 0 3px #fff,
+			/* 0 0 0 4px #fff, */
+			3px -3px 10px #1beabd,
+			-3px 3px 10px #0cd3a8;
+    border: 1px solid #1beabd;
 }
 
 .approvisionner .details-approv select {
     margin-top: 15px;
 }
 
-.approvisionner  button {
-    color: #fff;
+.detail-item  button {
+    /* color: #fff;
     background: #012557;
     font-size: 18px;
     margin-top: 25px;
     width: 60%;
     height: 5vh;
+    cursor: pointer; */
+
+    display: inline-block;
+	font-weight: 500;
+	color: #212529;
+	text-align: center;
+	border: 1px solid transparent;
+	padding: .275rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	color: #fff;
+	background-color: #007bff;
     cursor: pointer;
+    margin-top: 15px;
+
+
 }
 
 .approvisionner .details-approv .produits-commandes .valider-btn button {
-    color: #fff;
+    /* color: #fff;
     background: #012557;
     font-size: 18px;
     margin-top: 25px;
     width: 20%;
     height: 5vh;
+    cursor: pointer; */
+
+    display: inline-block;
+	font-weight: 500;
+	color: #212529;
+	text-align: center;
+	border: 1px solid transparent;
+	padding: .275rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	color: #fff;
+	background-color: #007bff;
     cursor: pointer;
+    width: 15%;
+    height: 5vh;
+
+
 }
 
 .approvisionner .produits-commandes table {
@@ -119,7 +168,7 @@
 
 .approvisionner .produits-commandes table thead {
     font-weight: 600;
-    background: #0e771a;
+    background: #038654;
     color: #f1f1f1;
 }
 
@@ -128,7 +177,7 @@
 }
 
 .approvisionner .produits-commandes table tbody tr:hover {
-    background-color: #0e771a;
+    background-color: #038654;
     color: #f1f1f1;
     font-weight: 600;
 }

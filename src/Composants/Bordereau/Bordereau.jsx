@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import AfficherBordereau from './AfficherBordereau';
 import './Bordereau.css';
+import { useSpring, animated } from 'react-spring';
 
 export default function Bordereau(props) {
+
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
 
     const [listeCommandes, setListeCommandes] = useState([]);
     const [listeCommandesSauvegardes, setListeCommandesSauvegardes] = useState([]);
@@ -12,7 +15,7 @@ export default function Bordereau(props) {
 
     useEffect(() => {
         const req = new XMLHttpRequest();
-        req.open('GET', `http://serveur/backend-cma/recuperer_commandes.php?`);
+        req.open('GET', `http://serveur/backend-cmab/recuperer_commandes.php?`);
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -36,7 +39,7 @@ export default function Bordereau(props) {
 
         const req = new XMLHttpRequest();
 
-        req.open('POST', 'http://serveur/backend-cma/recuperer_commandes.php');
+        req.open('POST', 'http://serveur/backend-cmab/recuperer_commandes.php');
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
@@ -79,27 +82,29 @@ export default function Bordereau(props) {
     }
 
     return (
-        <section className="container-bordereaux">
-            <div className="box-liste">
-                <h1>Liste des commandes</h1>
-                <p className="search-zone">
-                    <input type="text" placeholder="entrez une date" onChange={filtrerListe} />
-                </p>
-                <ul>
-                    {listeCommandes.length > 0 ? listeCommandes.map(item => (
-                        <li id={item.id_commande} key={item.id} onClick={afficherCommandes}>{item.date_commande}</li>
-                    )) : null}
-                </ul>
-            </div>
-            <div className="box-bordereau">
-                <h1>Bordereau de la commande</h1>
-                <div className="entete-bordereau">Fournisseur : &nbsp;<span className="span-entete">{infosCommande.fournisseur && infosCommande.fournisseur}</span></div>
-                <div className="entete-bordereau">Commandé par : &nbsp;<span className="span-entete">{infosCommande.vendeur && infosCommande.vendeur}</span></div>
-                <div className="entete-bordereau">Le : &nbsp;<span className="span-entete">{infosCommande.date_commande && mois(infosCommande.date_commande.substr(0, 10))}</span></div>
-                <div className="entete-bordereau">Montant : &nbsp;<span className="span-entete">{infosCommande.montant && infosCommande.montant + ' Fcfa'}</span></div>
-                <h1>Produits commandés</h1>
-                <AfficherBordereau commandesSelectionne={commandesSelectionne} />
-            </div>
-        </section>
+        <animated.div style={props1}>
+            <section className="container-bordereaux">
+                <div className="box-liste">
+                    <h1>Liste des commandes</h1>
+                    <p className="search-zone">
+                        <input type="text" placeholder="entrez une date" onChange={filtrerListe} />
+                    </p>
+                    <ul>
+                        {listeCommandes.length > 0 ? listeCommandes.map(item => (
+                            <li id={item.id_commande} key={item.id} onClick={afficherCommandes}>{item.date_commande}</li>
+                        )) : null}
+                    </ul>
+                </div>
+                <div className="box-bordereau">
+                    <h1>Bordereau de la commande</h1>
+                    <div className="entete-bordereau">Fournisseur : &nbsp;<span className="span-entete">{infosCommande.fournisseur && infosCommande.fournisseur}</span></div>
+                    <div className="entete-bordereau">Commandé par : &nbsp;<span className="span-entete">{infosCommande.vendeur && infosCommande.vendeur}</span></div>
+                    <div className="entete-bordereau">Le : &nbsp;<span className="span-entete">{infosCommande.date_commande && mois(infosCommande.date_commande.substr(0, 10))}</span></div>
+                    <div className="entete-bordereau">Montant : &nbsp;<span className="span-entete">{infosCommande.montant && infosCommande.montant + ' Fcfa'}</span></div>
+                    <h1>Produits commandés</h1>
+                    <AfficherBordereau commandesSelectionne={commandesSelectionne} />
+                </div>
+            </section>
+        </animated.div>
     )
 }

@@ -19,7 +19,7 @@ export default function AfficherProd(props) {
             </div>
             <div className="box">
                 <div className="item">
-                    <p>Catégorie</p>
+                    <p>Forme</p>
                     <p>{props.categorie}</p> 
                 </div>
                 <div className="item">

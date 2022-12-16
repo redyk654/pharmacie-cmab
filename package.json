@@ -6,8 +6,10 @@
   "version": "2.0.0",
   "main": "public/electron.js",
   "homepage": "./",
-  "win": {
-    "icon": "./public/pharmacie_icon.ico"
+  "build": {
+    "win": {
+      "icon": "build/pharmacie_icon.ico"
+    }
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.10",
@@ -18,9 +20,12 @@
     "electron-is-dev": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-hot-toast": "^2.4.0",
+    "react-icons": "^4.7.1",
     "react-loader-spinner": "^4.0.0",
     "react-modal": "^3.14.3",
     "react-scripts": "4.0.3",
+    "react-spring": "^9.5.5",
     "react-to-print": "^2.12.6",
     "react-typewriter": "^0.4.1",
     "socket.io-client": "^4.5.1",

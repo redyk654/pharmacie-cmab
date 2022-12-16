@@ -14,7 +14,7 @@
 
 .modif-produit h1 {
     font-size: larger;
-    background: #0e771a;
+    background: #03ca7e;
     color: #f1f1f1;
     text-align: center;
 }
@@ -24,13 +24,13 @@
     height: 5vh;
     outline: none;
     border-radius: 5px;
-    color: #0e771a;
+    color: #03ca7e;
     font-size: 17px;
     margin: 5px 0px;
 }
   
 .modif-produit .search-zone input:focus {
-      border: 2px solid #0e771a;
+      border: 2px solid #03ca7e;
 }
 
 .modif-produit ul{
@@ -41,21 +41,21 @@
 }
 
 .modif-produit ul li {
-    color: #0e771a;
+    color: #038654;
     font-weight: 600;
     width: 100%;
     padding: 0px 5px;
 }
 
 .modif-produit ul li:hover {
-    background-color: #0e771a;
+    background-color: #03ca7e;
     color: #f1f1f1;
     cursor: pointer;
 }
 
 .modif-produit .details-prod {
     /* display: flex; */
-    border: 1px solid #0e771a;
+    border: 1px solid #03ca7e;
 }
 
 .modif-produit .details-prod .box {
@@ -71,7 +71,7 @@
 }
 
 .modif-produit .details-prod .box .item p:first-child {
-    color: #0e771a;
+    color: #03ca7e;
 }
 
 .modif-produit .details-prod .box .item p:last-child {
@@ -85,17 +85,14 @@
     align-items: center;
 }
 
-.modif-produit button {
-    color: #fff;
-    background: #012557;
-    font-size: 18px;
-    margin-top: 10px;
-    margin-right: 10px;
-    width: 17%;
-    height: 5vh;
-    cursor: pointer;
+.bootstrap-btn.valider:hover {
+    background-color: #0069d9;
 }
 
-.modif-produit button:first-child {
-    background: rgb(150, 35, 35);
+.bootstrap-btn.annuler:hover {
+    background-color: #df322d;
+}
+
+.bootstrap-btn.annuler {
+    background-color: #ec4641;
 }

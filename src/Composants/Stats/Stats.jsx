@@ -43,7 +43,7 @@ export default function Stats(props) {
             data.append('mois', moisActu);
 
             const req = new XMLHttpRequest();
-            req.open('POST', `http://serveur/backend-cma/stats.php`);
+            req.open('POST', `http://serveur/backend-cmab/stats.php`);
             
             req.addEventListener('load', () => {
                 const result = JSON.parse(req.responseText);

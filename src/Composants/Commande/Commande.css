@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: 300px 1fr;
     height: 85vh;
+    /* background: #18202e; */
 }
 
 .commande .left-side, .commande .right-side {
@@ -9,16 +10,20 @@
 }
 
 .commande .right-side h1 {
-    background: #0e771a;
-    color: #f1f1f1;
+    background: #03ca7e;
+    color: #fff;
     text-align: center;
     margin: 0px 5px;
+    border-radius: 10px 10px 0px 0px;
+
 }
 
 .commande .left-side .liste-medoc h1 {
-    background-color: #0e771a;
-    color: #f1f1f1;
+    background-color: #03ca7e;
+    color: #fff;
     width: 100%;
+    border-radius: 10px 10px 0px 0px;
+    padding: 4px;
 }
 
 .commande .left-side {
@@ -30,12 +35,16 @@
   height: 5vh;
   outline: none;
   border-radius: 5px;
-  color: #0e771a;
+  color: #038654;
   font-size: 17px;
 }
 
 .commande .left-side .search-zone input:focus {
-    border: 2px solid #0e771a;
+    border: 1px solid #1beabd;
+    box-shadow: inset 0 0 0 3px #fff,
+			/* 0 0 0 4px #fff, */
+			1px -1px 4px #1beabd,
+			-1px 1px 4px #0cd3a8;
 }
 
 .commande .left-side .liste-medoc {
@@ -47,27 +56,31 @@
     border: 1px solid gray;
     overflow: auto;
     position: relative;
+    border-radius: 0px 0px 10px 10px;
 }
 
 .commande .left-side .liste-medoc ul .loader {
     position: absolute;
     bottom: 45%;
-    left: 40%;
+    left: 31%;
+
 }
 
 .commande .left-side .liste-medoc ul li {
-    color: #0e771a;
+    color: #038654;
     font-weight: 600;
     width: 100%;
+    padding: 0px 5px;
 }
 
 .commande .left-side .liste-medoc ul li:hover {
-    background-color: #0e771a;
+    background-color: rgba(4, 150, 94, 0.795);
     color: #f1f1f1;
     cursor: pointer;
 }
 
 .commande .right-side .erreur-message {
+    background: #fff;
     width: 100%;
     text-align: center;
     color: rgba(238, 42, 42, 0.952);
@@ -77,7 +90,7 @@
 
 .commande .right-side .infos-medoc {
     display: flex;
-    border: 1px solid green;
+    border: 1px solid #03ca7e;
     margin: 0px 5px;
 }
 
@@ -86,7 +99,7 @@
 }
 
 .commande .right-side .infos-medoc label {
-    color: #0e771a;
+    color: #03ca7e;
 }
 
 
@@ -105,7 +118,7 @@
 
 .commande .right-side .infos-medoc .box .item p:last-child {
     font-weight: 700;
-    color: #0c5f16;
+    color: #038654;
 }
 
 .commande .right-side input{
@@ -114,22 +127,13 @@
     height: 4vh;
     font-size: 15px;
     font-weight: 600;
-    color: #0e771a;
+    color: #038654;
     margin-right: 5px;
 }
 
-.commande .right-side .box button {
-    color: #fff;
-    background: #012557;
-    font-size: 18px;
+.commande .right-side h1 {
     margin-top: 5px;
-    width: 10%;
-    height: 4vh;
-    cursor: pointer;
-}
-
-.commande .right-side .details-commande h1 {
-    margin-top: 5px;
+    background-color: #03ca7e;
 }
 
 .commande .right-side .details-commande {
@@ -147,7 +151,7 @@
 }
 
 .commande .right-side .details-commande table tbody {
-    color: #012557;
+    color: #027e4e;
 }
 
 .commande .right-side .details-commande table thead tr td:nth-child(2),
@@ -166,7 +170,7 @@
     padding: 10px 0px;
 }
 
-.commande .right-side .details-commande .valider-annuler button {
+/* .commande .right-side .details-commande .valider-annuler button {
     width: 150px;
     height: 6vh;
     color: #f1f1f1;
@@ -174,7 +178,7 @@
     cursor: pointer;
     font-weight: 600;
     font-size: 17px;
-}
+} */
 
 .commande .right-side .details-commande .valider-annuler button:last-child {
     margin-left: 20px;
@@ -187,4 +191,59 @@
     background-color: #012557;
     cursor: pointer;
     font-size: 17px;
+}
+
+.bootstrap-btn {
+	display: inline-block;
+	font-weight: 500;
+	color: #212529;
+	text-align: center;
+	border: 1px solid transparent;
+	padding: .275rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	color: #fff;
+	background-color: #007bff;
+    cursor: pointer;
+    width: 13%;
+
+}
+
+.bootstrap-btn.valider:hover {
+    background-color: #0069d9;
+}
+
+.bootstrap-btn.annuler:hover {
+    background-color: #df322d;
+}
+
+.bootstrap-btn.annuler {
+    background-color: #ec4641;
+}
+
+.commande .right-side .box .detail-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 5px;
+}
+
+.commande .right-side .box .detail-item input[type=text]:focus {
+    box-shadow: inset 0 0 0 3px #fff,
+			1px -1px 4px #1beabd,
+			-1px 1px 4px #0cd3a8;
+    border: 1px solid #1beabd;
+}
+
+.btn-patient {
+	background: linear-gradient(90deg, #007bff, #489df7);
+    width: 20%;
+    height: 5vh;
+    color: honeydew;
+    font-size: medium;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

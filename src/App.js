@@ -1,5 +1,5 @@
 import './App.css';
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useContext } from 'react';
 import Entete from './Composants/Entete/Entete';
 import Connexion from './Composants/Connexion/Connexion';
 import Commande from './Composants/Commande/Commande';
@@ -9,13 +9,17 @@ import Comptes from './Composants/Comptes/Comptes';
 import GestionFactures from './Composants/GestionFactures/GestionFactures';
 import Etats from './Composants/Etats/Etats';
 import Stats from './Composants/Stats/Stats.jsx';
+import { FaChartArea, FaChartBar, FaChartLine, FaClipboard, FaClipboardList, FaLayerGroup, FaReceipt, FaShoppingBag, FaSignal, FaStore, FaTruck, FaUsers } from 'react-icons/fa';
+import { ContextChargement } from './Context/Chargement';
 
 
 function App() {
 
-  const role1 = "admin";
-  const role2 = "major";
-  const role3 = "vendeur";
+  const admin = "admin";
+  const major = "major";
+  const vendeur = "vendeur";
+
+  const {darkLight} = useContext(ContextChargement)
 
   const [onglet, setOnglet] = useState(1);
   const [connecter, setConnecter] = useState(false);
@@ -23,7 +27,7 @@ function App() {
   const [role, setRole] = useState('');
 
   useEffect(() => {
-    if(role === role1) {
+    if(role === admin) {
       setOnglet(6);
     } else {
       setOnglet(1);
@@ -56,17 +60,37 @@ function App() {
   }
 
   if (connecter) {
-    if(role === role1) {
+    if(role === admin) {
       return (
-        <main className='app'>
+        <main className={`app ${darkLight ? 'dark' : ''}`}>
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
-            <div className="onglets-blocs" style={{width: '85%'}}>
-              <div className={`tab ${onglet === 6 ? 'active' : ''}`} onClick={ () => {setOnglet(6)}}>Etats</div>
-              <div className={`tab ${onglet === 2 ? 'active' : ''}`} onClick={ () => {setOnglet(2)}}>Inventaires</div>
-              <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Gestion des stocks</div>
-              <div className={`tab ${onglet === 4 ? 'active' : ''}`} onClick={ () => {setOnglet(4)}}>Comptes</div>
-              <div className={`tab ${onglet === 7 ? 'active' : ''}`} onClick={ () => {setOnglet(7)}}>Statistiques</div>
+            <div className="onglets-blocs" style={{width: '97%', fontSize: '12px'}}>
+              <div className={`tab ${onglet === 6 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(6)}}>
+                <FaReceipt size={18} />
+                &nbsp;
+                Etats
+              </div>
+              <div className={`tab ${onglet === 2 ? 'active' : ''}  ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(2)}}>
+                <FaClipboardList size={19} />
+                &nbsp;
+                Inventaires
+              </div>
+              <div className={`tab ${onglet === 3 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(3)}}>
+                <FaLayerGroup size={18} />
+                &nbsp;
+                Gestion des stocks
+              </div>
+              <div className={`tab ${onglet === 4 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(4)}}>
+                <FaUsers size={20} />
+                &nbsp;
+                Comptes
+              </div>
+              <div className={`tab ${onglet === 7 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(7)}}>
+                <FaChartBar size={19} />
+                &nbsp;
+                Statistiques
+              </div>
             </div>
             <div className="onglets-contenu">
                 {contenu}
@@ -74,15 +98,27 @@ function App() {
           </section>
         </main>
       );
-    } else if (role === role2) {
+    } else if (role === major) {
       return (
-        <main className='app'>
+        <main className={`app ${darkLight ? 'dark' : ''}`}>
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
-            <div className="onglets-blocs" style={{width: '58%'}}>
-              <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
-              <div className={`tab ${onglet === 3 ? 'active' : ''}`} onClick={ () => {setOnglet(3)}}>Gestion des stocks</div>
-              <div className={`tab ${onglet === 6 ? 'active' : ''}`} onClick={ () => {setOnglet(6)}}>Etats</div>
+            <div className="onglets-blocs" style={{width: '75%'}}>
+              <div className={`tab ${onglet === 1 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(1)}}>
+                <FaStore size={22} />
+                &nbsp;
+                Ventes
+              </div>
+              <div className={`tab ${onglet === 3 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(3)}}>
+                <FaLayerGroup size={22} />
+                &nbsp;
+                Gestion des stocks
+              </div>
+              <div className={`tab ${onglet === 6 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(6)}}>
+                <FaReceipt size={22} />
+                &nbsp;
+                Etats
+              </div>
             </div>
             <div className="onglets-contenu">
                 {contenu}
@@ -90,14 +126,22 @@ function App() {
           </section>
         </main>
       );
-    } else if (role === role3) {
+    } else if (role === vendeur) {
       return (
-        <main className='app'>
+        <main className={`app ${darkLight ? 'dark' : ''}`}>
           <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
           <section className="conteneur-onglets">
             <div className="onglets-blocs" style={{width: '28%'}}>
-              <div className={`tab ${onglet === 1 ? 'active' : ''}`} onClick={ () => {setOnglet(1)}}>Ventes</div>
-              <div className={`tab ${onglet === 6 ? 'active' : ''}`} onClick={ () => {setOnglet(6)}}>Etats</div>
+              <div className={`tab ${onglet === 1 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(1)}}>
+                <FaStore size={22} />
+                &nbsp;
+                Ventes
+              </div>
+              <div className={`tab ${onglet === 6 ? 'active' : ''} ${darkLight ? 'dark' : ''}`} onClick={ () => {setOnglet(6)}}>
+                <FaReceipt size={22} />
+                &nbsp;
+                Etats
+              </div>
             </div>
             <div className="onglets-contenu">
                 {contenu}
