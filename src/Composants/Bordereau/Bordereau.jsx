@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AfficherBordereau from './AfficherBordereau';
 import './Bordereau.css';
 import { useSpring, animated } from 'react-spring';
+import { ContextChargement } from '../../Context/Chargement';
 
 export default function Bordereau(props) {
 
     const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+
+    const {darkLight} = useContext(ContextChargement)
 
     const [listeCommandes, setListeCommandes] = useState([]);
     const [listeCommandesSauvegardes, setListeCommandesSauvegardes] = useState([]);
@@ -97,10 +100,10 @@ export default function Bordereau(props) {
                 </div>
                 <div className="box-bordereau">
                     <h1>Bordereau de la commande</h1>
-                    <div className="entete-bordereau">Fournisseur : &nbsp;<span className="span-entete">{infosCommande.fournisseur && infosCommande.fournisseur}</span></div>
-                    <div className="entete-bordereau">Commandé par : &nbsp;<span className="span-entete">{infosCommande.vendeur && infosCommande.vendeur}</span></div>
-                    <div className="entete-bordereau">Le : &nbsp;<span className="span-entete">{infosCommande.date_commande && mois(infosCommande.date_commande.substr(0, 10))}</span></div>
-                    <div className="entete-bordereau">Montant : &nbsp;<span className="span-entete">{infosCommande.montant && infosCommande.montant + ' Fcfa'}</span></div>
+                    <div className="entete-bordereau">Fournisseur : &nbsp;<span className="span-entete" style={{color: `${darkLight ? '#fff' : '#000'}`}}>{infosCommande.fournisseur && infosCommande.fournisseur}</span></div>
+                    <div className="entete-bordereau">Commandé par : &nbsp;<span className="span-entete" style={{color: `${darkLight ? '#fff' : '#000'}`}}>{infosCommande.vendeur && infosCommande.vendeur}</span></div>
+                    <div className="entete-bordereau">Le : &nbsp;<span className="span-entete" style={{color: `${darkLight ? '#fff' : '#000'}`}}>{infosCommande.date_commande && mois(infosCommande.date_commande.substr(0, 10))}</span></div>
+                    <div className="entete-bordereau">Montant : &nbsp;<span className="span-entete" style={{color: `${darkLight ? '#fff' : '#000'}`}}>{infosCommande.montant && infosCommande.montant + ' Fcfa'}</span></div>
                     <h1>Produits commandés</h1>
                     <AfficherBordereau commandesSelectionne={commandesSelectionne} />
                 </div>

@@ -10,13 +10,13 @@
     height: 5vh;
     outline: none;
     border-radius: 5px;
-    color: #03ca7e;
+    color: #038654;
     font-size: 17px;
     margin: 5px 0px;
 }
   
 .container-bordereaux .box-liste input:focus {
-      border: 2px solid #03ca7e;
+      border: 2px solid #038654;
 }
 
 .container-bordereaux h1 {
@@ -43,14 +43,14 @@
 }
 
 .container-bordereaux ul li {
-    color: #03ca7e;
+    color: #038654;
     font-weight: 600;
     width: 100%;
     padding: 0px 5px;
 }
 
 .container-bordereaux ul li:hover {
-    background-color: #03ca7e;
+    background-color: rgba(4, 150, 94, 0.795);
     color: #f1f1f1;
     cursor: pointer;
 }
@@ -66,7 +66,7 @@
 
 .container-bordereaux .box-bordereau .entete-bordereau .span-entete {
     font-weight: 600;
-    color: #03ca7e;
+    /* color: #03ca7e; */
 }
 
 .container-bordereaux .box-bordereau .bordereau-details {

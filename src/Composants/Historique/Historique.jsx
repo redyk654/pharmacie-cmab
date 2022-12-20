@@ -19,22 +19,23 @@ const customStyles2 = {
 
 const customStyles1 = {
     content: {
-      top: '15%',
+      top: '25%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+      width: '40vw',
     },
 };
 
 export default function Historique(props) {
 
-    const {chargement, stopChargement, startChargement} = useContext(ContextChargement);
+    const {chargement, stopChargement, startChargement, darkLight} = useContext(ContextChargement);
+    Modal.defaultStyles.overlay.backgroundColor = '#18202ed3';
 
     let date_filtre = useRef();
-    const date_e = new Date('2024-12-15');
+    const date_e = new Date('2023-12-15');
     const date_j = new Date();
 
     const [listeHistorique, setListeHistorique] = useState([]);
@@ -150,39 +151,6 @@ export default function Historique(props) {
 
         setStockRestant(medocSelectionne[0].en_stock);
         setDatePeremtion(medocSelectionne[0].date_peremption);
-        // const date_appro = `${medocSelectionne[0].date_approv.substring(0, 2)} ${mois(medocSelectionne[0].date_approv.substring(3, 5))} ${medocSelectionne[0].date_approv.substring(6, 10)}`;
-        // setDateApprov(mois(medocSelectionne[0].date_approv.substring(0, 10)));
-
-        /*
-            * Requête ajax pour recuperer dans la base l'historique du produit sélectionné
-        
-        */
-
-        // Préparation des données
-        // const data1 = new FormData();
-        // data1.append('id_prod', medocSelectionne[0].id);
-
-        // const req1 = new XMLHttpRequest();
-        // req1.open('POST', 'http://serveur/backend-cmab/recuperer_historique.php');
-        // req1.addEventListener('load', () => {
-        //     if (req1.status >= 200 && req1.status < 400) {
-        //         const result = JSON.parse(req1.responseText);
-        //         setMedocSelectionne(result);
-        //         setMedocSelectionneSauvegarde(result);
-        //         // Calcul de la quantité total sortie du produit
-        //         let qte_sortie = 0;
-        //         result.map(item => {
-        //             if (item.status_vente === "payé") {
-        //                 qte_sortie += parseInt(item.quantite);
-        //             }
-        //         });
-        //         setStockSorti(qte_sortie);
-        //     } else {
-        //         console.error(req1.status + " " + req1.statusText);
-        //     }
-        // });
-
-        // req1.send(data1);
 
         const data1 = new FormData();
         data1.append('id', medocSelectionne[0].id);
@@ -245,6 +213,11 @@ export default function Historique(props) {
         }
     }
 
+    const afterModal = () => {
+        customStyles1.content.color = darkLight ? '#fff' : '#000';
+        customStyles1.content.background = darkLight ? '#18202e' : '#fff';
+    }
+
     const fermerModalReussi = () => {
         setModalReussi(false);
     }
@@ -271,22 +244,22 @@ export default function Historique(props) {
                 style={customStyles1}
                 contentLabel="validation commande"
             >
-                <h2 style={{color: '#fff'}}>êtes-vous sûr de vouloir valider la commande ?</h2>
+                <h2 style={{textAlign: 'center', marginBottom: '10px'}}>Correction du stock</h2>
                 <div style={{lineHeight: '22px'}}>
-                    <div style={{textAlign: 'center', color: '#fff'}} className='modal-button'>
+                    <div style={{textAlign: 'center'}} className='modal-button'>
                         <label htmlFor="">Stock théorique: </label>
                         <strong>{stockRestant && stockRestant}</strong>
                     </div>
-                    <div style={{textAlign: 'center', color: '#fff'}} className='modal-button'>
-                        <label htmlFor="">Stock physique : </label>
+                    <div style={{textAlign: 'center'}} className='modal-button'>
+                        <label htmlFor="">Stock réel : </label>
                         <input type="text" style={{width: '75px'}} id="" onChange={handleChange} />
                     </div>
-                    <div style={{display: `${ecart > 0 || ecart < 0 ? 'block' : 'none'}`, textAlign: 'center', color: '#fff'}}>
+                    <div style={{display: `${ecart > 0 || ecart < 0 ? 'block' : 'none'}`, textAlign: 'center'}}>
                         <label htmlFor="">Ecart : </label>
                         <strong style={{color: '#ffca18'}}>{ecart > 0 ?  '+' + ecart : ecart}</strong>
                     </div>
                     <div style={{textAlign: 'center'}}>
-                        <button style={{cursor: 'pointer'}} onClick={() => setStockPhy(parseInt(stockRestant) + ecart)}>Enregistrer</button>
+                        <button className='bootstrap-btn' style={{cursor: 'pointer', width: '180px'}} onClick={() => setStockPhy(parseInt(stockRestant) + ecart)}>Enregistrer</button>
                     </div>
                 </div>
             </Modal>
@@ -320,7 +293,7 @@ export default function Historique(props) {
                         <input type="checkbox" id="filtre" checked={non_paye} onChange={(e) => setNonPaye(!non_paye)} />
                     </div>
                     <div className="entete-historique">
-                        <button onClick={() => setModalConfirmation(true)}>Modifier</button>
+                        <button className='bootstrap-btn' onClick={() => {setModalConfirmation(true); afterModal();}}>Modifier</button>
                     </div>
                     <div className="entete-historique" style={{display: `${non_paye ? 'block' : 'none'}`}}>
                         <label htmlFor="">Date : </label>

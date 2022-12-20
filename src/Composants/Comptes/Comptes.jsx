@@ -10,7 +10,8 @@ const customStyles1 = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+      background: '#038654',
+      borderRadius: '10px'
     },
 };
 
@@ -22,7 +23,7 @@ const customStyles2 = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        background: '#0e771a',
+        background: '#038654',
     },
 };
 
@@ -75,7 +76,7 @@ export default function Comptes(props) {
         return modalContenu ? 
         (
             <Fragment>
-                <h2 style={{color: '#fff'}}>Enregistrer cette recette ?</h2>
+                <h1 style={{color: '#fff'}}>Enregistrer cette recette ?</h1>
                 <div style={{textAlign: 'center'}} className='modal-button'>
                     <button id='annuler' className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalConfirmation}>non</button>
                     <button id='confirmer' className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer'}} onClick={enregisterRecette}>oui</button>
@@ -84,7 +85,7 @@ export default function Comptes(props) {
         ) :
         (
             <form action="" className="form-compte">
-                <h3>Nouveau compte</h3>
+                <h2 style={{textAlign: 'center', color: '#fff'}}>Nouveau compte</h2>
                 <div className="box-input">
                     <p className="input-zone">
                         <label htmlFor="">Nom</label>
@@ -301,7 +302,7 @@ export default function Comptes(props) {
                 ) : 
                 (
                     <Fragment>
-                        <h2 style={{color: '#fff'}}>Enregistré avec succès✔️!</h2>
+                        <h2 style={{color: '#fff'}}>Compte enregistré !</h2>
                         <button style={{width: '25%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalReussi}>Fermer</button>
                     </Fragment>
                 )}
@@ -316,7 +317,7 @@ export default function Comptes(props) {
                         <li id={item.nom_user} onClick={afficherCompte}>{item.nom_user.toUpperCase()}</li>
                         ))}
                     <div className="nv-compte">
-                        <button onClick={ajouterCompte}>ajouter</button>
+                        <button style={{width: '30%', height: '5vh', marginBottom: '6px'}} className='bootstrap-btn' onClick={ajouterCompte}>ajouter</button>
                     </div>
                     </ul>
                 </div>
@@ -333,7 +334,7 @@ export default function Comptes(props) {
                         </div>
                    </div>
                    <div style={{width: '100%', textAlign: 'center',}}>   
-                        <button style={{width: '15%', marginTop: '30px', backgroundColor: '#e14046'}} onClick={supprimerCompte}>Supprimer</button>
+                        <button className='bootstrap-btn annuler' style={{width: '15%', marginTop: '30px', height: '5vh'}} onClick={supprimerCompte}>Supprimer</button>
                    </div>
                 </div>
             </div>

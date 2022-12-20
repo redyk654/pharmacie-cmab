@@ -7,7 +7,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  
 }
 
 ::-webkit-scrollbar {
@@ -31,11 +30,16 @@ body {
   position: relative;
   font-family: poppins, Impact;
   letter-spacing: .8px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* border: 2px solid rebeccapurple; */
 }
 
 .app.dark {
   background: #18202e;
   color: #fff;
+  height: 145vh;
 }
 
 .app .conteneur-onglets {

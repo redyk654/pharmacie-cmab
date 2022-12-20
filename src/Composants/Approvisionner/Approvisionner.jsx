@@ -95,6 +95,7 @@ export default function Approvisionner(props) {
     const elt2 = useRef();
 
     const {darkLight} = useContext(ContextChargement);
+    Modal.defaultStyles.overlay.backgroundColor = '#18202ed3';
 
     const [afficherListe, setAfficherListe] = useState(false)
     const [listeProduit, setListeProduit] = useState([]);

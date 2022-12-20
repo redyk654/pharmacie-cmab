@@ -132,7 +132,7 @@ export default function Stats(props) {
                                 </select>
                             </p>
                         </div>
-                        <button onClick={rechercherHistorique}>rechercher</button>
+                        <button className='bootstrap-btn' onClick={rechercherHistorique}>rechercher</button>
                     </div>
                     <div className='erreur-message'>{messageErreur}</div>
                     <table>
@@ -157,7 +157,7 @@ export default function Stats(props) {
                 {historique.length > 0 && (
                     <div style={{textAlign: 'center'}}>
                         <ReactToPrint
-                            trigger={() => <button style={{color: '#f1f1f1', height: '5vh', width: '20%', cursor: 'pointer', fontSize: 'large', fontWeight: '600', margin: '15px'}}>Imprimer</button>}
+                            trigger={() => <button className='bootstrap-btn' style={{color: '#f1f1f1', height: '5vh', width: '20%', cursor: 'pointer', fontSize: 'large', fontWeight: '600', margin: '15px'}}>Imprimer</button>}
                             content={() => componentRef.current}
                         />
                     </div>

@@ -89,8 +89,7 @@ const stylePatient = {
 export default function Commande(props) {
 
     const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
-    Modal.defaultStyles.overlay.backgroundColor = '#18202ebe';
-
+    Modal.defaultStyles.overlay.backgroundColor = '#18202ed3';
 
     const componentRef = useRef();
     const elt = useRef();
@@ -98,7 +97,6 @@ export default function Commande(props) {
     const refPatient= useRef();
     const assuranceDefaut = 'aucune';
     const {chargement, stopChargement, startChargement, darkLight} = useContext(ContextChargement);
-    let interval = null;
 
     const date_e = new Date('2024-12-15');
     const date_j = new Date();
@@ -753,7 +751,7 @@ export default function Commande(props) {
                     <h1>Liste de produits</h1>
                     <ul>
                         {chargement ? <div className="loader"><Loader type="TailSpin" color="#03ca7e" height={100} width={100}/></div> : listeMedoc.map(item => (
-                            <li value={item.id} key={item.id} onClick={afficherInfos} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) || parseInt(item.en_stock) === 0 ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
+                            <li value={item.id} key={item.id} onClick={afficherInfos} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) || parseInt(item.en_stock) === 0 ? '#ec4641' : ''}`}}>{item.designation.toLowerCase()}</li>
                         ))}
                     </ul>
                 </div>
