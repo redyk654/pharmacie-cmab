@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AfficherProd from '../AfficherProd/AfficherProd';
 import './ModifierProduit.css';
 import Modal from 'react-modal';
 import { useSpring, animated } from 'react-spring';
+import { ContextChargement } from '../../Context/Chargement';
 
 const customStyles1 = {
     content: {
@@ -12,7 +13,8 @@ const customStyles1 = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+      borderRadius: '10px',
+    //   background: '#0e771a',
     },
 };
 
@@ -31,6 +33,7 @@ const customStyles2 = {
 export default function ModifierProduit() {
 
     const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+    const {darkLight} = useContext(ContextChargement);
 
     const [afficherListe, setAfficherListe] = useState(false);
     const [listeProduit, setListeProduit] = useState([]);
@@ -151,6 +154,11 @@ export default function ModifierProduit() {
         setnvprix('');
     }
 
+    const afterModal = () => {
+        customStyles1.content.color = darkLight ? '#fff' : '#000';
+        customStyles1.content.background = darkLight ? '#18202e' : '#fff';
+    }
+
     return (
         <animated.div style={props1}>
             <section className="modif-produit">
@@ -160,10 +168,10 @@ export default function ModifierProduit() {
                     style={customStyles1}
                     contentLabel="validation suppression"
                 >
-                    <h2 style={{color: '#fff'}}>êtes-vous sûr de vouloir supprimer ce produit ?</h2>
+                    <h2>êtes-vous sûr de vouloir supprimer ce produit ?</h2>
                     <div style={{textAlign: 'center'}} className='modal-button'>
-                        <button className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalConfirmation}>Annuler</button>
-                        <button id='confirmer' className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer'}} onClick={supprimerProduit}>Confirmer</button>
+                        <button className='bootstrap-btn annuler' style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalConfirmation}>Annuler</button>
+                        <button id='confirmer' className='bootstrap-btn' style={{width: '20%', height: '5vh', cursor: 'pointer'}} onClick={supprimerProduit}>Confirmer</button>
                     </div>
                 </Modal>
                 <Modal
@@ -172,12 +180,12 @@ export default function ModifierProduit() {
                     style={customStyles1}
                     contentLabel="modif prix"
                 >
-                    <h2 style={{color: '#fff'}}>Entrez le nouveau prix</h2>
+                    <h2>Entrez le nouveau prix</h2>
                     <div style={{textAlign: 'center'}}>
                         <input style={{marginBottom: '10px', outline: 'none'}} value={nvprix} type="text" onChange={handleChange} />
                         <div>
-                            <button className='btn-confirmation' style={{width: '40%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalModifPrix}>Annuler</button>
-                            <button className='btn-confirmation' style={{width: '40%', height: '5vh', cursor: 'pointer'}} onClick={modifierPrix}>Confirmer</button>
+                            <button className='bootstrap-btn annuler' style={{width: '40%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalModifPrix}>Annuler</button>
+                            <button className='bootstrap-btn' style={{width: '40%', height: '5vh', cursor: 'pointer'}} onClick={modifierPrix}>Confirmer</button>
                         </div>
                     </div>
                 </Modal>
@@ -221,8 +229,8 @@ export default function ModifierProduit() {
                         ))}
                     </div>
                     <div className="buttons">
-                        <button className='bootstrap-btn annuler' onClick={() => { if (produitSelectionne.length > 0) {setModalConfirmation(true)}}}>Supprimer</button>
-                        <button className='bootstrap-btn valider' onClick={() => { if (produitSelectionne.length > 0) {setModalModifPrix(true)}}}>Modifier le prix</button>
+                        <button className='bootstrap-btn annuler' onClick={() => { if (produitSelectionne.length > 0) {setModalConfirmation(true); afterModal();}}}>Supprimer</button>
+                        <button className='bootstrap-btn valider' onClick={() => { if (produitSelectionne.length > 0) {setModalModifPrix(true); afterModal();}}}>Modifier le prix</button>
                     </div>
                 </div>
             </section>

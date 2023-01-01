@@ -4,15 +4,15 @@ import { ContextChargement } from '../../Context/Chargement';
 import ReactToPrint from 'react-to-print';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import ImprimerStats from './ImprimerStats';
-
+import { useSpring, animated } from 'react-spring';
 
 export default function Stats(props) {
 
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
     const componentRef = useRef();
     const admin = "admin";
 
-
-    let date_select1 = useRef();
+    // let date_select1 = useRef();
     let date_select2 = useRef();
     let heure_select1 = useRef();
     let heure_select2 = useRef();
@@ -98,6 +98,7 @@ export default function Stats(props) {
     }
 
     return (
+        <animated.div style={props1}>
         <section className="etats">
             <h1>Stats des produits</h1>
             <div className="container-historique">
@@ -171,5 +172,6 @@ export default function Stats(props) {
                 />
             </div>
         </section>
+        </animated.div>
     )
 }

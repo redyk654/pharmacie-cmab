@@ -99,15 +99,15 @@
     outline: none;
     border: none;
     background: none;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #ccc;
     width: 100%;
-    color: #f1f1f1;
+    /* color: #f1f1f1; */
     font-size: medium;
 }
 
 .form-compte .box-input p{
     margin-top: 30px;
-    color: #f1f1f1;
+    /* color: #f1f1f1; */
 }
 
 .form-compte .btn-control {
@@ -117,11 +117,11 @@
 }
 
 .form-compte .btn-control button {
-    background: #fffdfd;
+    /* background: #fffdfd; */
     font-size: 18px;
     width: 30%;
     height: 5vh;
     cursor: pointer;
     margin-left: 10px;
-    color: #000;
+    /* color: #000; */
 }

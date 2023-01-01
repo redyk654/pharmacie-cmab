@@ -4,6 +4,8 @@ import { ContextChargement } from '../../Context/Chargement';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import Modal from 'react-modal';
+import { Toaster, toast } from "react-hot-toast";
+import { useSpring, animated } from 'react-spring';
 
 const customStyles2 = {
     content: {
@@ -26,11 +28,13 @@ const customStyles1 = {
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       width: '40vw',
+      borderRadius: '10px',
     },
 };
 
 export default function Historique(props) {
 
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
     const {chargement, stopChargement, startChargement, darkLight} = useContext(ContextChargement);
     Modal.defaultStyles.overlay.backgroundColor = '#18202ed3';
 
@@ -42,11 +46,14 @@ export default function Historique(props) {
     const [listeSauvegarde, setListeSauvegarde] = useState([]);
     const [medocSelectionne, setMedocSelectionne] = useState(false);
     const [medocSelectionneSauvegarde, setMedocSelectionneSauvegarde] = useState(false);
+    const [qteEntre, setQteEntre] = useState(0);
+    const [qteSortie, SetQteSortie] = useState(0);
     const [designation, setDesignation] = useState('');
     const [stockSorti, setStockSorti] = useState(false);
     const [stockRestant, setStockRestant] = useState(false);
     const [datePeremption, setDatePeremtion] = useState(false);
     const [dateApprov, setDateApprov] = useState(false);
+    const [dateAffiche, setDateAffiche] = useState('');
     const [alerteStock, setAlerteStock] = useState('');
     const [modalReussi, setModalReussi] = useState(false);
     const [non_paye, setNonPaye] = useState(false);
@@ -59,7 +66,7 @@ export default function Historique(props) {
     useEffect(() => {
         startChargement();
         if (date_j.getTime() <= date_e.getTime()) {
-            // Récupération de la liste de produits via Ajax
+            // Récupération de la liste de produits
             const req = new XMLHttpRequest();
             req.open('GET', 'http://serveur/backend-cmab/recuperer_historique.php');
 
@@ -116,14 +123,28 @@ export default function Historique(props) {
 
     useEffect(() => {
         if (medocSelectionne && medocSelectionneSauvegarde) {
-            if (non_paye && dateApprov) {
-                const d = new Date(dateApprov);
+            if (non_paye) {
+                const d = dateApprov ? new Date(dateApprov) : new Date();
                 setMedocSelectionne(medocSelectionneSauvegarde.filter(item => (item.date_heure.indexOf(d.toLocaleDateString()) !== -1)));
+                setDateAffiche(d.toLocaleDateString());
             } else {
                 setMedocSelectionne(medocSelectionneSauvegarde);
             }
         }
-    }, [non_paye, dateApprov]);
+    }, [non_paye, dateApprov, medocSelectionneSauvegarde]);
+
+    useEffect(() => {
+        if (medocSelectionne && medocSelectionneSauvegarde) {
+            let Tentre=0, Tsortie=0;
+            medocSelectionne.forEach(item => {
+                Tentre += parseInt(item.qte_entre);
+                Tsortie += parseInt(item.qte_sortie);
+            });
+
+            setQteEntre(Tentre);
+            SetQteSortie(Tsortie);
+        }
+    }, [medocSelectionne]);
 
     const filtrerListe = (e) => {
         const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1 || item.id === e.target.value));
@@ -139,14 +160,15 @@ export default function Historique(props) {
     }
 
     const afficherHistorique = (e) => {
+        setDateApprov(false);
         const medocSelectionne = listeHistorique.filter(item => (item.id == e.target.value));
 
         if (parseInt(medocSelectionne[0].en_stock) === 0) {
-            setAlerteStock('le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner');
-            setModalReussi(true);
+            var msgAlerteStock = 'le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner';
+            toastAlerteStock(msgAlerteStock, '#dd4c47');
         } else if (parseInt(medocSelectionne[0].en_stock) <= parseInt(medocSelectionne[0].min_rec)) {
-            setAlerteStock('Vous serez bientôt à cour de ' + medocSelectionne[0].designation + ' ! Pensez à vous approvisionner');
-            setModalReussi(true);
+            var msgAlerteStock = medocSelectionne[0].designation + ' bientôt en rupture de stock ! Pensez à vous approvisionner';
+            toastAlerteStock(msgAlerteStock, '#FFB900');
         }
 
         setStockRestant(medocSelectionne[0].en_stock);
@@ -162,6 +184,7 @@ export default function Historique(props) {
                 const result = JSON.parse(req1.responseText);
                 setMedocSelectionne(result);
                 setMedocSelectionneSauvegarde(result);
+                setNonPaye(true);
                 setDesignation(medocSelectionne[0].designation);
             } else {
                 console.error(req1.status + " " + req1.statusText);
@@ -228,7 +251,22 @@ export default function Historique(props) {
         setStockPhy(0);
     }
 
+    const toastAlerteStock = (msg, bg) => {
+        toast.error(msg, {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '18px',
+                color: '#fff',
+                backgroundColor: bg,
+                letterSpacing: '1px',
+            },
+            
+        });
+    }
+
     return (
+        <animated.div style={props1}>
+        <div><Toaster/></div>
         <section className="historique">
             <Modal
                 isOpen={modalReussi}
@@ -280,7 +318,7 @@ export default function Historique(props) {
                     <h1>Produits</h1>
                     <ul>
                         {chargement ? <div className="loader"><Loader type="Circles" color="#0e771a" height={100} width={100}/></div> : listeHistorique.map(item => (
-                            <li value={item.id} key={item.id} onClick={afficherHistorique} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}}>{item.designation.toLowerCase() + ' (' + item.en_stock + ')'}</li>
+                            <li value={item.id} key={item.id} onClick={afficherHistorique} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? '#dd4c47' : ''}`}}>{item.designation.toLowerCase() + ' (' + item.en_stock + ')'}</li>
                             ))}
                     </ul>
                 </div>
@@ -288,7 +326,7 @@ export default function Historique(props) {
                     <div className="entete-historique">Désignation: <span style={{fontWeight: '600'}}>{designation}</span></div>
                     <div className="entete-historique">Stock Disponible : <span style={{fontWeight: '600'}}>{stockRestant && stockRestant}</span></div>
                     <div className="entete-historique">Date péremption : <span style={{fontWeight: '600'}}>{datePeremption && datePeremption}</span></div>
-                    <div className="entete-historique">
+                    <div className="entete-historique" style={{display: 'none'}}>
                         <label htmlFor="filtre">Filtrer : </label>
                         <input type="checkbox" id="filtre" checked={non_paye} onChange={(e) => setNonPaye(!non_paye)} />
                     </div>
@@ -298,6 +336,15 @@ export default function Historique(props) {
                     <div className="entete-historique" style={{display: `${non_paye ? 'block' : 'none'}`}}>
                         <label htmlFor="">Date : </label>
                         <input type="date" id="" ref={date_filtre} onChange={(e) => setDateApprov(e.target.value)} />
+                    </div>
+                    <div className="entete-historique">
+                        Listing du : <span style={{fontWeight: '600'}}>{mois(dateAffiche)}</span>
+                    </div>
+                    <div className="entete-historique">
+                        Total entrées : <span style={{fontWeight: '600'}}>{qteEntre}</span>
+                    </div>
+                    <div className="entete-historique">
+                        Total sorties : <span style={{fontWeight: '600'}}>{qteSortie}</span>
                     </div>
                     <h1>Mouvements</h1>
                     <table>
@@ -329,5 +376,6 @@ export default function Historique(props) {
                 </div>
             </div>
         </section>
+        </animated.div>
     )
 }

@@ -8,13 +8,14 @@ import { ContextChargement } from '../../Context/Chargement';
 
 const customStyles1 = {
     content: {
-      top: '32%',
+      top: '45%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#0e771a',
+      borderRadius: '10px',
+    //   height: '40vh'
     },
 };
 
@@ -153,6 +154,11 @@ export default function Entete(props) {
         setModalReussi(false);
     }
 
+    const afterModal = () => {
+        customStyles1.content.color = darkLight ? '#fff' : '#000';
+        customStyles1.content.background = darkLight ? '#18202e' : '#fff';
+    }
+
     return (
         <header className="entete" style={{height: `${slide ? '18vh' : '18vh'}`}}>
             <Modal
@@ -172,31 +178,31 @@ export default function Entete(props) {
                 contentLabel=""
             >
                 <form action="" className="form-compte">
-                    <h3>Modifier mot de passe</h3>
+                    <h3 style={{color: `${darkLight ? '#fff' : '#000'}`}}>Modifier mot de passe</h3>
                     <div className="box-input">
                         <p className="input-zone">
                             <label htmlFor="">Ancien mot de passe</label>
-                            <input type="password" name="ancien" value={ancien} onChange={handleChange} autoComplete="off" />
+                            <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="ancien" value={ancien} onChange={handleChange} autoComplete="off" />
                         </p>
                         <p className="input-zone">
                             <label htmlFor="">Nouveau mot de passe</label>
-                            <input type="password" name="nouveau" value={nouveau} onChange={handleChange} autoComplete="off" />
+                            <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="nouveau" value={nouveau} onChange={handleChange} autoComplete="off" />
                         </p>
                         <p className="input-zone">
                             <label htmlFor="">Confirmer nouveau mot de passe</label>
-                            <input type="password" name="confirmation" value={confirmation} onChange={handleChange} autoComplete="off" />
+                            <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="confirmation" value={confirmation} onChange={handleChange} autoComplete="off" />
                         </p>
                     </div>
-                    <div style={{color: '#fff53b'}}>{msgErreur}</div>
+                    <div style={{color: '#df322d', fontWeight: 'bold'}}>{msgErreur}</div>
                     <div className="btn-control">
-                        <button type="reset" onClick={fermerModalConfirmation}>annuler</button>
-                        <button type="submit" onClick={modifierMotDePasse}>valider</button>
+                        <button className='bootstrap-btn annuler' type="reset" onClick={fermerModalConfirmation}>annuler</button>
+                        <button className='bootstrap-btn' type="submit" onClick={modifierMotDePasse}>valider</button>
                     </div>
                 </form>
             </Modal>
             <div className="box-entete">
                 <h1 style={{textAlign: 'center', width: '98vw', fontSize: '29px'}}>
-                    © CMA de Bepanda
+                    Pharmacie
                 </h1>
                 <h3 onClick={() => setSlide(!slide)}>{props.nomConnecte.toUpperCase()}</h3>
                 <div className='deconnection' style={{display: `${slide ? 'flex' : 'flex'}`,}}>
@@ -204,10 +210,10 @@ export default function Entete(props) {
                         <FaSignOutAlt size={24} />
                     </div>
                     <div>
-                        <button style={{display: `${slide ? 'inline' : 'inline'}`}} onClick={() => {setModalConfirmation(true)}} >Modifier</button>
+                        <button style={{display: `${slide ? 'inline' : 'inline'}`}} onClick={() => {setModalConfirmation(true); afterModal();}} >Modifier</button>
                     </div>
                     <button 
-                        ref={elt} 
+                        ref={elt}
                         style={{cursor: 'pointer', marginLeft: '15px', background: 'none', border: 'none', color: '#fff'}}
                         onClick={toogleTheme} 
                         title="thème"

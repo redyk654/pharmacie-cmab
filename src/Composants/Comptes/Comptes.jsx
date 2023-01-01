@@ -1,16 +1,17 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useContext } from 'react';
 import './Comptes.css';
 import Modal from 'react-modal';
+import { ContextChargement } from '../../Context/Chargement';
+import { useSpring, animated } from 'react-spring';
 
 const customStyles1 = {
     content: {
-      top: '32%',
+      top: '45%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: '#038654',
       borderRadius: '10px'
     },
 };
@@ -35,6 +36,11 @@ const utilisateur = {
 
 export default function Comptes(props) {
 
+    const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
+    Modal.defaultStyles.overlay.backgroundColor = '#18202ed3';
+
+    const {darkLight} = useContext(ContextChargement);
+
     const [listeComptes, setListeComptes] = useState([]);
     const [recettes, setRecettes] = useState([]);
     const [recettejour, setRecetteJour] = useState({});
@@ -48,7 +54,6 @@ export default function Comptes(props) {
     const [messageErreur, setMessageErreur] = useState('');
 
     const { nom, mdp, confirmation } = nvCompte;
-
 
     useEffect(() => {
         // Récupération des comptes
@@ -79,25 +84,24 @@ export default function Comptes(props) {
                 <h1 style={{color: '#fff'}}>Enregistrer cette recette ?</h1>
                 <div style={{textAlign: 'center'}} className='modal-button'>
                     <button id='annuler' className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalConfirmation}>non</button>
-                    <button id='confirmer' className='btn-confirmation' style={{width: '20%', height: '5vh', cursor: 'pointer'}} onClick={enregisterRecette}>oui</button>
                 </div>
             </Fragment>
         ) :
         (
             <form action="" className="form-compte">
-                <h2 style={{textAlign: 'center', color: '#fff'}}>Nouveau compte</h2>
+                <h2 style={{textAlign: 'center',}}>Nouveau compte</h2>
                 <div className="box-input">
                     <p className="input-zone">
                         <label htmlFor="">Nom</label>
-                        <input type="text" name="nom" value={nom} onChange={handleChange} autoComplete="off" />
+                        <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="text" name="nom" value={nom} onChange={handleChange} autoComplete="off" />
                     </p>
                     <p className="input-zone">
                         <label htmlFor="">Mot de passe</label>
-                        <input type="password" name="mdp" value={mdp} onChange={handleChange} autoComplete="off" />
+                        <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="mdp" value={mdp} onChange={handleChange} autoComplete="off" />
                     </p>
                     <p className="input-zone">
                         <label htmlFor="">Confirmer mot de passe</label>
-                        <input type="password" name="confirmation" value={confirmation} onChange={handleChange} autoComplete="off" />
+                        <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="confirmation" value={confirmation} onChange={handleChange} autoComplete="off" />
                     </p>
                     <p className="input-zone">
                         <label htmlFor="">Rôle : </label>
@@ -110,8 +114,8 @@ export default function Comptes(props) {
                 </div>
                 <div style={{color: '#fff53b'}}>{msgErreur}</div>
                 <div className="btn-control">
-                    <button type="reset" onClick={annulerCompte}>annuler</button>
-                    <button type="submit" onClick={enregistrerCompte}>valider</button>
+                    <button className='bootstrap-btn annuler' type="reset" onClick={annulerCompte}>annuler</button>
+                    <button className='bootstrap-btn' type="submit" onClick={enregistrerCompte}>valider</button>
                 </div>
             </form>
         )
@@ -126,35 +130,39 @@ export default function Comptes(props) {
     const enregistrerCompte = (e) => {
         e.preventDefault();
         // Enregistrement du nouveau compte dans la base de données
-
-        if (mdp === confirmation) {
+        if (nom.length === 0) {
+            setMsgErreur('Saisissez un nom');
+        } else if (mdp.length === 0) {
+            setMsgErreur('Saisissez un mot de passe')
+        } else if (mdp !== confirmation) {
+            setMsgErreur('Le mot de passe et la confirmation du mot de passe doivent être identique');
+        } else if (mdp.length < 4 && mdp.length > 8) {
+            setMsgErreur('Le mot de passe doit être compris entre 4 et 8 caractères')
+        } else {
             setMsgErreur('');
-
+    
             const data = new FormData();
             data.append('nom', nom);
             data.append('mdp', mdp);
             data.append('role', document.querySelector('form').role.value);
-
+    
             const req = new XMLHttpRequest();
             req.open('POST', 'http://serveur/backend-cmab/enregistrer_compte.php');
-
+    
             req.addEventListener('load', () => {
                 setNvCompte(utilisateur);
                 fermerModalConfirmation();
                 setReussi('');
                 setModalReussi(true);
             })
-
+    
             req.addEventListener("error", function () {
                 // La requête n'a pas réussi à atteindre le serveur
                 setMessageErreur('Erreur réseau');
             });
-
+    
             req.send(data);
             
-
-        } else {
-            setMsgErreur('Le mot de passe et le mot passe de confirmation doivent être identique')
         }
     }
 
@@ -165,80 +173,7 @@ export default function Comptes(props) {
     const ajouterCompte = () => {
         setModalContenu(false);
         setModalConfirmation(true)
-
-    }
-
-    const afficherRecettes = (e) => {
-
-        // Récupération de l'historique des recetttes du vendeur selectionner
-        const req1 = new XMLHttpRequest();
-        req1.open('GET', `http://serveur/backend-cmab/gestion_recette.php?nom=${e.target.id}`);
-        req1.addEventListener('load', () => {
-            if(req1.status >= 200 && req1.status < 400) {
-                const result = JSON.parse(req1.responseText);
-                setRecettes(result);
-            }
-        });
-
-        req1.addEventListener("error", function () {
-            // La requête n'a pas réussi à atteindre le serveur
-            setMessageErreur('Erreur réseau');
-        });
-
-        req1.send();
-
-        // Récupération de la recette en cours du vendeur selectionné
-        const heure = new Date();
-
-        const data = new FormData();
-        data.append('nom', e.target.id);
-
-        const req2 = new XMLHttpRequest();
-        if (heure.getHours() < 10 && heure.getHours() > 6) {
-            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=nuit');
-            req2.send(data);
-        } else if (heure.getHours() > 14 && heure.getHours() < 18) {
-            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=jour');
-            req2.send(data);
-        }
-
-        req2.addEventListener('load', () => {
-            if(req2.status >= 200 && req2.status < 400) {
-                const result = JSON.parse(req2.responseText);
-                setRecetteJour(result);
-                setCompteSelectionne(e.target.id);
-            }
-        });
-
-        req2.addEventListener("error", function () {
-            // La requête n'a pas réussi à atteindre le serveur
-            setMessageErreur('Erreur réseau');
-        });
-    }
-
-    const enregisterRecette = () => {
-        // Enreistrement de la recette dans la base de données
-        setModalContenu(true);
-        setModalConfirmation(false);
-        const data = new FormData();
-        data.append('nom', compteSelectionne);
-        data.append('montant', recettejour.recette);
-
-        const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cmab/gestion_recette.php');
-
-        req.addEventListener('load', () => {
-            if (req.status >= 200 && req.status < 400) {
-                setModalReussi(true);
-            }
-        });
-
-        req.addEventListener("error", function () {
-            // La requête n'a pas réussi à atteindre le serveur
-            setMessageErreur('Erreur réseau');
-        });
-
-        req.send(data);
+        afterModal();
     }
 
     const afficherCompte = (e) => {
@@ -271,13 +206,21 @@ export default function Comptes(props) {
 
     const fermerModalConfirmation = () => {
         setModalConfirmation(false);
-      }
+        setNvCompte(utilisateur);
+    }
   
     const fermerModalReussi = () => {
         setModalReussi(false);
     }
 
+    const afterModal = () => {
+        customStyles1.content.color = darkLight ? '#fff' : '#000';
+        customStyles1.content.background = darkLight ? '#18202e' : '#fff';
+    }
+
     return (
+
+        <animated.div style={props1}>
         <section className="comptes">
             <Modal
                 isOpen={modalConfirmation}
@@ -339,5 +282,6 @@ export default function Comptes(props) {
                 </div>
             </div>
         </section>
+        </animated.div>
     )
 }
