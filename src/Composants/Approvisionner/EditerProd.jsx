@@ -56,7 +56,7 @@ export default function EditerProd(props) {
                 </div>
                 <div className="detail-item">
                     <label htmlFor="">Genre</label>
-                    <select name="genre" id="genre" onChange={props.handleChange} value={props.genre}>
+                    <select name="genre" id="genre" onChange={e => {props.genre=e.target.value}} value={props.genre}>
                         <option value="generique">générique</option>
                         <option value="sp">spécialité</option>
                     </select>
@@ -65,7 +65,18 @@ export default function EditerProd(props) {
             <div className='box'>
                 <div className="detail-item">
                     <label htmlFor="">Classe</label>
-                    <input type="text" name="classe" value={props.classe} onChange={props.handleChange} autoComplete="off" />
+                    <select name="classe" id="classe" onChange={props.handleChange} value={props.classe}>
+                        <option value="antibiotiques">antibiotiques</option>
+                        <option value="antipaludiques">antipaludiques</option>
+                        <option value="antiinflammatoiresetantalgiques">anti-inflammatoires et antalgiques</option>
+                        <option value="antispamodiques">antispamodiques</option>
+                        <option value="antigrippaux">antigrippaux</option>
+                        <option value="antihistaminiqueh1">anti histaminique h1</option>
+                        <option value="antiulcereuxetantiacide">anti ulcereux et anti acide</option>
+                        <option value="vermifuges">vermifuges</option>
+                        <option value="vitaminesetelectrolytes">vitamines et electrolytes</option>
+                        <option value="antianemique">anti anemique</option>
+                    </select>
                 </div>
             </div>
         </div>

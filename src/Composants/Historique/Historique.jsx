@@ -323,9 +323,6 @@ export default function Historique(props) {
                     </ul>
                 </div>
                 <div className="table-commandes">
-                    <div className="entete-historique">Désignation: <span style={{fontWeight: '600'}}>{designation}</span></div>
-                    <div className="entete-historique">Stock Disponible : <span style={{fontWeight: '600'}}>{stockRestant && stockRestant}</span></div>
-                    <div className="entete-historique">Date péremption : <span style={{fontWeight: '600'}}>{datePeremption && datePeremption}</span></div>
                     <div className="entete-historique" style={{display: 'none'}}>
                         <label htmlFor="filtre">Filtrer : </label>
                         <input type="checkbox" id="filtre" checked={non_paye} onChange={(e) => setNonPaye(!non_paye)} />
@@ -340,12 +337,15 @@ export default function Historique(props) {
                     <div className="entete-historique">
                         Listing du : <span style={{fontWeight: '600'}}>{mois(dateAffiche)}</span>
                     </div>
+                    <div className="entete-historique">Désignation: <span style={{fontWeight: '600'}}>{designation}</span></div>
+                    <div className="entete-historique">Date péremption : <span style={{fontWeight: '600'}}>{datePeremption && datePeremption}</span></div>
                     <div className="entete-historique">
                         Total entrées : <span style={{fontWeight: '600'}}>{qteEntre}</span>
                     </div>
                     <div className="entete-historique">
                         Total sorties : <span style={{fontWeight: '600'}}>{qteSortie}</span>
                     </div>
+                    <div className="entete-historique">Stock Disponible : <span style={{fontWeight: '600'}}>{stockRestant && stockRestant}</span></div>
                     <h1>Mouvements</h1>
                     <table>
                         <thead>

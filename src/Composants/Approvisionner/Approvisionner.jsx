@@ -202,7 +202,7 @@ export default function Approvisionner(props) {
     const ajouterNouveauProduit = (e) => {
         e.preventDefault();
 
-        if (isNaN(parseInt(pu_vente)) && isNaN(parseInt(min_rec)) && isNaN(parseInt(pu_achat))) {
+        if (isNaN(parseInt(pu_vente)) || isNaN(parseInt(min_rec)) || isNaN(parseInt(pu_achat))) {
             setMsgErreur("Le prix de vente, le prix d'achat et le stock minimum doivent être des nombres");
         } else if (designation.length === 0) {
             setMsgErreur('Le produit doit avoir une designation')
@@ -463,6 +463,7 @@ export default function Approvisionner(props) {
                             )) : null}
                     </ul>
                 </div>
+
                 <div className="details-approv">
                     <h1>Détails produit</h1>
                     <form>
@@ -477,6 +478,7 @@ export default function Approvisionner(props) {
                             date_peremption={date_peremption}
                             stock_ajoute={stock_ajoute}
                             pu_achat={pu_achat}
+                            genre={genre}
                             handleChange={handleChange}
                             ajouterMedoc={ajouterMedoc}
                             nvProd={nvProd}

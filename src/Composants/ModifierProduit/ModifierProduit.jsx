@@ -4,6 +4,8 @@ import './ModifierProduit.css';
 import Modal from 'react-modal';
 import { useSpring, animated } from 'react-spring';
 import { ContextChargement } from '../../Context/Chargement';
+import { Toaster, toast } from "react-hot-toast";
+import EditerProd from '../Approvisionner/EditerProd';
 
 const customStyles1 = {
     content: {
@@ -30,6 +32,21 @@ const customStyles2 = {
     },
 };
 
+const medocs = {
+    code: '',
+    designation: '',
+    classe: '',
+    pu_achat: '',
+    pu_vente: '',
+    conditionnement: '',
+    stock_ajoute: '',
+    min_rec: '',
+    categorie: '',
+    date_peremption: '',
+    montant_commande: '',
+    genre: 'generique',
+};
+
 export default function ModifierProduit() {
 
     const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
@@ -40,11 +57,17 @@ export default function ModifierProduit() {
     const [listeSauvegarde, setListeSauvegarde] = useState([]);
     const [nvprix, setnvprix] = useState('');
     const [produitSelectionne, setproduitSelectionne] = useState([]);
+    const [infosMedoc, setInfosMedoc] = useState(medocs);
     const [modalConfirmation, setModalConfirmation] = useState(false);
     const [modalModifPrix, setModalModifPrix] = useState(false)
     const [modalReussi, setModalReussi] = useState(false);
     const [messageReussi, setMessageReussi] = useState('');
     const [refecth, setRefetch] = useState(false)
+    const [modif, setModif] = useState(false)
+    const [msgErreur, setMsgErreur] = useState('');
+
+
+    const {code, designation, classe, pu_achat, pu_vente, conditionnement, stock_ajoute, min_rec, categorie, date_peremption, montant_commande, genre} = infosMedoc;
 
     useEffect(() => {
         // Récupération de la liste de produits via Ajax
@@ -72,6 +95,15 @@ export default function ModifierProduit() {
     const selectionneProduit = (e) => {
         const prod = listeProduit.filter(item => (item.id == e.target.value));
         setproduitSelectionne(prod);
+        setInfosMedoc(prod[0]);
+    }
+
+    const handleChange = (e) => {
+        if (e.target.name === "code") {
+            setInfosMedoc({...infosMedoc, [e.target.name]: e.target.value.toUpperCase()});
+        } else {
+            setInfosMedoc({...infosMedoc, [e.target.name]: e.target.value});
+        }
     }
 
     const supprimerProduit = () => {
@@ -98,28 +130,27 @@ export default function ModifierProduit() {
         }
     }
 
-    const handleChange = (e) => {
-        setnvprix(e.target.value);
-    }
-
-    const modifierPrix = () => {
+    const modifierProd = () => {
         // Mettre à jour le prix
-        if (!isNaN(nvprix)) {
-
+        if (pu_vente.length === 0|| isNaN(parseInt(pu_vente)) && isNaN(parseInt(min_rec)) && isNaN(parseInt(pu_achat))) {
+            setMsgErreur("Le prix de vente, le prix d'achat et le stock minimum doivent être des nombres");
+        } else if (designation.length === 0) {
+            setMsgErreur('Le produit doit avoir une designation')
+        } else {
+            setMsgErreur('')
             const data = new FormData();
-            data.append('nvprix', nvprix);
-            data.append('designation', produitSelectionne[0].designation);
+            data.append('produit', JSON.stringify(infosMedoc));
             
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://serveur/backend-cmab/maj_prix.php');
+            req.open('POST', 'http://serveur/backend-cmab/modif_prod.php');
             
             req.addEventListener('load', () => {
                 if (req.status >= 200 && req.status < 400) {
-                    setMessageReussi('le prix a bien été modifié');
-                    setModalModifPrix(false);
-                    setModalReussi(true);
                     setproduitSelectionne([]);
+                    setInfosMedoc(medocs);
+                    setModif(false)
                     setRefetch(!refecth);
+                    toastReussi();
                 }
             });
 
@@ -159,8 +190,21 @@ export default function ModifierProduit() {
         customStyles1.content.background = darkLight ? '#18202e' : '#fff';
     }
 
+    const toastReussi = () => {
+        toast.success("Modification éffectué !", {
+            style: {
+                fontWeight: 'bold',
+                fontSize: '18px',
+                backgroundColor: '#fff',
+                letterSpacing: '1px'
+            },
+            
+        });
+    }
+
     return (
         <animated.div style={props1}>
+            <div><Toaster/></div>
             <section className="modif-produit">
                 <Modal
                     isOpen={modalConfirmation}
@@ -185,7 +229,7 @@ export default function ModifierProduit() {
                         <input style={{marginBottom: '10px', outline: 'none'}} value={nvprix} type="text" onChange={handleChange} />
                         <div>
                             <button className='bootstrap-btn annuler' style={{width: '40%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalModifPrix}>Annuler</button>
-                            <button className='bootstrap-btn' style={{width: '40%', height: '5vh', cursor: 'pointer'}} onClick={modifierPrix}>Confirmer</button>
+                            <button className='bootstrap-btn' style={{width: '40%', height: '5vh', cursor: 'pointer'}} onClick={modifierProd}>Confirmer</button>
                         </div>
                     </div>
                 </Modal>
@@ -206,31 +250,51 @@ export default function ModifierProduit() {
                     </p>
                     <ul>
                         {afficherListe ? listeProduit.map(item => (
-                            <li value={item.id} key={item.id} onClick={selectionneProduit} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
+                            <li value={item.id} key={item.id} onClick={selectionneProduit} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? '#dd4c47' : ''}`}}>{item.designation.toLowerCase()}</li>
                             )) : null}
                     </ul>
                 </div>
                 <div className="col-2">
                     <h1>Détails du produit</h1>
-                    <div className="details-prod">
-                        {produitSelectionne.length > 0 && produitSelectionne.map(item => (
-                            <AfficherProd
-                            key={item.id}
-                            code={item.code}
-                            designation={item.designation}
-                            pu_achat={item.pu_achat}
-                            pu_vente={item.pu_vente}
-                            en_stock={item.en_stock}
-                            min_rec={item.min_rec}
-                            categorie={item.categorie}
-                            conditionnement={item.conditionnement}
-                            date_peremption={item.date_peremption}
+                    {modif ? (
+                        <>
+                            <EditerProd
+                                code={code}
+                                designation={designation}
+                                classe={classe}
+                                categorie={categorie}
+                                pu_vente={pu_vente}
+                                min_rec={min_rec}
+                                conditionnement={conditionnement}
+                                date_peremption={date_peremption}
+                                stock_ajoute={stock_ajoute}
+                                nvProd={true}
+                                ajouterMedoc={modifierProd}
+                                handleChange={handleChange}
                             />
-                        ))}
-                    </div>
-                    <div className="buttons">
-                        <button className='bootstrap-btn annuler' onClick={() => { if (produitSelectionne.length > 0) {setModalConfirmation(true); afterModal();}}}>Supprimer</button>
-                        <button className='bootstrap-btn valider' onClick={() => { if (produitSelectionne.length > 0) {setModalModifPrix(true); afterModal();}}}>Modifier le prix</button>
+                        </>
+                    ) : (
+                        <div className="details-prod">
+                            {produitSelectionne.length > 0 && produitSelectionne.map(item => (
+                                <AfficherProd
+                                key={item.id}
+                                code={item.code}
+                                designation={item.designation}
+                                pu_achat={item.pu_achat}
+                                pu_vente={item.pu_vente}
+                                en_stock={item.en_stock}
+                                min_rec={item.min_rec}
+                                categorie={item.categorie}
+                                conditionnement={item.conditionnement}
+                                date_peremption={item.date_peremption}
+                                />
+                            ))}
+                        </div>
+                    )}
+                    <div style={{color: 'red', backgroundColor: `#fff`}}>{msgErreur}</div>
+
+                    <div className="buttons" style={{display: `${!modif ? 'block' : 'none'}`, textAlign: 'center'}}>
+                        <button className='bootstrap-btn annuler' onClick={() => { if (produitSelectionne.length > 0) {setModif(true); afterModal();}}}>Modifier</button>
                     </div>
                 </div>
             </section>
