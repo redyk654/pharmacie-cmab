@@ -27,7 +27,7 @@ const customStyles1 = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      width: '40vw',
+      width: '45vw',
       borderRadius: '10px',
     },
 };
@@ -44,6 +44,8 @@ export default function Historique(props) {
 
     const [listeHistorique, setListeHistorique] = useState([]);
     const [listeSauvegarde, setListeSauvegarde] = useState([]);
+    const [idProd, setIdProd] = useState(false);
+    const [puVente, setPuVente] = useState(false);
     const [medocSelectionne, setMedocSelectionne] = useState(false);
     const [medocSelectionneSauvegarde, setMedocSelectionneSauvegarde] = useState(false);
     const [qteEntre, setQteEntre] = useState(0);
@@ -97,11 +99,12 @@ export default function Historique(props) {
         if (parseInt(stockPhy) > 0 && parseInt(stockPhy) !== parseInt(stockRestant)) {
             const data = new FormData();
 
-            data.append('id_prod', medocSelectionne[0].id);
+            console.log(medocSelectionneSauvegarde);
+            data.append('id_prod', idProd);
             data.append('designation', designation);
             data.append('par', props.nomConnecte);
             data.append('qte_dispo', stockPhy);
-            data.append('pu_vente', medocSelectionne[0].pu_vente);
+            data.append('pu_vente', puVente);
 
             const req = new XMLHttpRequest();
             req.open('POST', 'http://serveur/backend-cmab/gestion_stock.php?rem=inventaire');
@@ -110,6 +113,9 @@ export default function Historique(props) {
                 fermerModalConfirmation();
                 setMedocSelectionne(false);
                 setState(!state);
+                setDesignation('');
+                setDatePeremtion(false);
+                setStockRestant(false);
             });
 
             req.addEventListener("error", function () {
@@ -120,6 +126,7 @@ export default function Historique(props) {
             req.send(data);
         }
     }, [stockPhy]);
+
 
     useEffect(() => {
         if (medocSelectionne && medocSelectionneSauvegarde) {
@@ -132,6 +139,7 @@ export default function Historique(props) {
             }
         }
     }, [non_paye, dateApprov, medocSelectionneSauvegarde]);
+
 
     useEffect(() => {
         if (medocSelectionne && medocSelectionneSauvegarde) {
@@ -182,10 +190,13 @@ export default function Historique(props) {
         req1.addEventListener('load', () => {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);
+                setIdProd(medocSelectionne[0].id)
+                setPuVente(medocSelectionne[0].pu_vente)
                 setMedocSelectionne(result);
                 setMedocSelectionneSauvegarde(result);
                 setNonPaye(true);
-                setDesignation(medocSelectionne[0].designation);
+                setDesignation(medocSelectionne[0].designation)
+                console.log(medocSelectionne);
             } else {
                 console.error(req1.status + " " + req1.statusText);
             }
@@ -282,8 +293,8 @@ export default function Historique(props) {
                 style={customStyles1}
                 contentLabel="validation commande"
             >
-                <h2 style={{textAlign: 'center', marginBottom: '10px'}}>Correction du stock</h2>
-                <div style={{lineHeight: '22px'}}>
+                <h2 style={{textAlign: 'center', marginBottom: '10px'}}>Correction du stock de {designation}</h2>
+                <div style={{lineHeight: '24px'}}>
                     <div style={{textAlign: 'center'}} className='modal-button'>
                         <label htmlFor="">Stock théorique: </label>
                         <strong>{stockRestant && stockRestant}</strong>
@@ -297,7 +308,7 @@ export default function Historique(props) {
                         <strong style={{color: '#ffca18'}}>{ecart > 0 ?  '+' + ecart : ecart}</strong>
                     </div>
                     <div style={{textAlign: 'center'}}>
-                        <button className='bootstrap-btn' style={{cursor: 'pointer', width: '180px'}} onClick={() => setStockPhy(parseInt(stockRestant) + ecart)}>Enregistrer</button>
+                        <button className='bootstrap-btn' style={{cursor: 'pointer', width: '180px', marginTop: '15px'}} onClick={() => setStockPhy(parseInt(stockRestant) + ecart)}>Enregistrer</button>
                     </div>
                 </div>
             </Modal>

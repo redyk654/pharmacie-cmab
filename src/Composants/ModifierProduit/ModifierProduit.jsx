@@ -268,6 +268,7 @@ export default function ModifierProduit() {
                                 conditionnement={conditionnement}
                                 date_peremption={date_peremption}
                                 stock_ajoute={stock_ajoute}
+                                genre={genre}
                                 nvProd={true}
                                 ajouterMedoc={modifierProd}
                                 handleChange={handleChange}
