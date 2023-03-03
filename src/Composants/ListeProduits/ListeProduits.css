@@ -1,0 +1,10 @@
+.liste-prod .search-zone input {
+    outline: none;
+    border-radius: 5px;
+    color: #038654;
+    /* font-size: 17px; */
+    height: 4vh;
+    margin-bottom: 5px;
+    padding-left: 4px;
+    margin: 4px;
+}

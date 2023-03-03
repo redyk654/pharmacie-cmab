@@ -31,7 +31,7 @@ export default function Connexion(props) {
         data.append('mdp', mdp);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cmab/connexion.php');
+        req.open('POST', 'http://192.168.8.103/backend-cmab/connexion.php');
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {

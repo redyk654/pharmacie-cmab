@@ -72,10 +72,10 @@ export default function EditerProd(props) {
                         <option value="antispamodiques">antispamodiques</option>
                         <option value="antigrippaux">antigrippaux</option>
                         <option value="antihistaminiqueh1">anti histaminique h1</option>
-                        <option value="antiulcereuxetantiacide">anti ulcereux et anti acide</option>
+                        <option value="antiulcereuxetantiacide">anti ulcereux et anti acides</option>
                         <option value="vermifuges">vermifuges</option>
                         <option value="vitaminesetelectrolytes">vitamines et electrolytes</option>
-                        <option value="antianemique">anti anemique</option>
+                        <option value="antianemiques">anti anemiques</option>
                     </select>
                 </div>
             </div>

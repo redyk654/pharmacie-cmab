@@ -11,6 +11,7 @@ import Etats from './Composants/Etats/Etats';
 import Stats from './Composants/Stats/Stats.jsx';
 import { FaChartArea, FaChartBar, FaChartLine, FaClipboard, FaClipboardList, FaLayerGroup, FaReceipt, FaShoppingBag, FaSignal, FaStore, FaTruck, FaUsers } from 'react-icons/fa';
 import { ContextChargement } from './Context/Chargement';
+import ListeProduits from './Composants/ListeProduits/ListeProduits';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const admin = "admin";
   const major = "major";
   const vendeur = "vendeur";
+  const medecin = "medecin";
 
   const {darkLight} = useContext(ContextChargement)
 
@@ -147,6 +149,13 @@ function App() {
                 {contenu}
             </div>
           </section>
+        </main>
+      );
+    } else if (role === medecin) {
+      return (
+        <main className={`app ${darkLight ? 'dark' : ''}`}>
+          <Entete nomConnecte={nomConnecte} setConnecter={setConnecter} setOnglet={setOnglet} />
+          <ListeProduits />
         </main>
       );
     } else {
