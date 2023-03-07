@@ -9,7 +9,7 @@ import Comptes from './Composants/Comptes/Comptes';
 import GestionFactures from './Composants/GestionFactures/GestionFactures';
 import Etats from './Composants/Etats/Etats';
 import Stats from './Composants/Stats/Stats.jsx';
-import { FaChartArea, FaChartBar, FaChartLine, FaClipboard, FaClipboardList, FaLayerGroup, FaReceipt, FaShoppingBag, FaSignal, FaStore, FaTruck, FaUsers } from 'react-icons/fa';
+import { FaChartBar, FaClipboardList, FaLayerGroup, FaReceipt, FaStore, FaTruck, FaUsers } from 'react-icons/fa';
 import { ContextChargement } from './Context/Chargement';
 import ListeProduits from './Composants/ListeProduits/ListeProduits';
 

@@ -25,7 +25,7 @@ export default function AfficherListe(props) {
                 </thead>
                 <tbody>
                     {props.listeProduits.filter(item => item.classe === props.classe).map(item => (
-                        <tr style={{lineHeight: '22px'}}>
+                        <tr key={item.id} style={{lineHeight: '22px'}}>
                             <td style={{textTransform: 'capitalize'}}>{item.designation}</td>
                             <td style={styles1}>{item.categorie}</td>
                             <td style={styles1}>{item.pu_vente}</td>

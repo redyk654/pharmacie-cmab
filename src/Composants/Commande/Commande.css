@@ -79,7 +79,7 @@
     cursor: pointer;
 }
 
-.commande .right-side .erreur-message {
+.erreur-message {
     background: #fff;
     width: 100%;
     text-align: center;

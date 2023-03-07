@@ -22,18 +22,20 @@ export default function ListeProduits() {
 
     const [listeProduits, setListeProduits] = useState([]);
     const [listeProduitsSauvegarde, setListeProduitsSauvegarde] = useState([]);
+    const [msgErreur, setMsgErreur] = useState('')
 
     useEffect(() => {
-        const req = new XMLHttpRequest();
-        req.open('GET', 'http://192.168.8.103/backend-cmab/liste_produits_par_classe.php');
-
-        req.addEventListener('load', () => {
-            const result = JSON.parse(req.responseText);
-            setListeProduits(result);
-            setListeProduitsSauvegarde(result);
-        });
-
-        req.send()
+        fetch('http://serveur/backend-cmab/liste_produits_par_classe.php')
+        .then(response => response.json())
+        .then(data => {
+            
+            setMsgErreur('')
+            setListeProduits(data);
+            setListeProduitsSauvegarde(data);
+        })
+        .catch(error => {
+            setMsgErreur("erreur réseau");
+        })
     }, []);
 
   return (
@@ -42,6 +44,7 @@ export default function ListeProduits() {
             listeProduitsSauvegarde={listeProduitsSauvegarde}
             setListeProduits={setListeProduits}
         />
+        <p className='erreur-message'>{msgErreur}</p>
         {listeClasses.map(classe => (
             <AfficherListe
                 listeProduits={listeProduits}
