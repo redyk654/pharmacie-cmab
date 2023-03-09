@@ -2,9 +2,35 @@
     outline: none;
     border-radius: 5px;
     color: #038654;
-    /* font-size: 17px; */
-    height: 4vh;
+    font-size: 19px;
+    height: 5vh;
     margin-bottom: 5px;
     padding-left: 4px;
     margin: 4px;
+}
+
+.liste-prod table tbody tr {
+    line-height: 38px;
+}
+
+@media screen and (max-width: 500px) {
+
+    .liste-prod table {
+        font-size: 10px;
+    }
+
+    .liste-prod .search-zone input {
+        outline: none;
+        border-radius: 5px;
+        color: #038654;
+        font-size: 11px;
+        height: 4vh;
+        margin-bottom: 5px;
+        padding-left: 4px;
+        margin: 4px;
+    }
+
+    .liste-prod table tbody tr {
+        line-height: 22px;
+    }
 }
