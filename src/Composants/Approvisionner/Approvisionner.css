@@ -34,6 +34,15 @@
     color: #038654;
     font-size: 17px;
     margin-bottom: 5px;
+    padding: 4px;
+}
+
+.approvisionner .infos-approv .search-zone input:focus {
+    border: 1px solid #1beabd;
+    box-shadow: inset 0 0 0 3px #fff,
+			/* 0 0 0 4px #fff, */
+			1px -1px 4px #1beabd,
+			-1px 1px 4px #0cd3a8;
 }
 
 .approvisionner ul{
@@ -109,13 +118,6 @@
 }
 
 .detail-item  button {
-    /* color: #fff;
-    background: #012557;
-    font-size: 18px;
-    margin-top: 25px;
-    width: 60%;
-    height: 5vh;
-    cursor: pointer; */
 
     display: inline-block;
 	font-weight: 500;

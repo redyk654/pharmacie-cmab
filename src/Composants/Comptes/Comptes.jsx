@@ -30,6 +30,7 @@ const customStyles2 = {
 
 const utilisateur = {
     nom: '',
+    pseudo: '',
     mdp: '',
     confirmation: ''
 }
@@ -53,7 +54,7 @@ export default function Comptes(props) {
     const [reussi, setReussi] = useState('supp');
     const [messageErreur, setMessageErreur] = useState('');
 
-    const { nom, mdp, confirmation } = nvCompte;
+    const { nom, pseudo, mdp, confirmation } = nvCompte;
 
     useEffect(() => {
         // Récupération des comptes
@@ -96,6 +97,10 @@ export default function Comptes(props) {
                         <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="text" name="nom" value={nom} onChange={handleChange} autoComplete="off" />
                     </p>
                     <p className="input-zone">
+                        <label htmlFor="">Pseudo</label>
+                        <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="text" name="pseudo" value={pseudo} onChange={handleChange} autoComplete="off" />
+                    </p>
+                    <p className="input-zone">
                         <label htmlFor="">Mot de passe</label>
                         <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="mdp" value={mdp} onChange={handleChange} autoComplete="off" />
                     </p>
@@ -109,10 +114,11 @@ export default function Comptes(props) {
                             <option value="admin">admin</option>
                             <option value="major">major</option>
                             <option value="vendeur">vendeur</option>
+                            <option value="medecin">medecin</option>
                         </select>
                     </p>
                 </div>
-                <div style={{color: '#fff53b'}}>{msgErreur}</div>
+                <div style={{color: `${darkLight ? '#fff53b' : '#df322d'}`}}>{msgErreur}</div>
                 <div className="btn-control">
                     <button className='bootstrap-btn annuler' type="reset" onClick={annulerCompte}>annuler</button>
                     <button className='bootstrap-btn' type="submit" onClick={enregistrerCompte}>valider</button>
@@ -123,26 +129,27 @@ export default function Comptes(props) {
 
     const annulerCompte = () => {
         fermerModalConfirmation();
-        setNvCompte(utilisateur)
-        setMsgErreur('');
     }
 
     const enregistrerCompte = (e) => {
         e.preventDefault();
         // Enregistrement du nouveau compte dans la base de données
-        if (nom.length === 0) {
-            setMsgErreur('Saisissez un nom');
-        } else if (mdp.length === 0) {
-            setMsgErreur('Saisissez un mot de passe')
-        } else if (mdp !== confirmation) {
-            setMsgErreur('Le mot de passe et la confirmation du mot de passe doivent être identique');
-        } else if (mdp.length < 4 && mdp.length > 8) {
-            setMsgErreur('Le mot de passe doit être compris entre 4 et 8 caractères')
+        if (mdp !== confirmation) {
+            setMsgErreur('Le mot de passe et le mot passe de confirmation doivent être identique');
+        } else if (pseudo.length === 0) {
+            setMsgErreur('le champ pseudo ne doit pas être vide');
+        } else if (pseudo.length > 4) {
+            setMsgErreur('le pseudo doit pas depassé 4 caractères');
+        } else if (nom.length === 0) {
+            setMsgErreur('le champ nom ne doit pas être vide');
+        } else if (mdp.length < 4 || mdp.length > 8) {
+            setMsgErreur('le mot de passe doit être compris entre 4 et 8 caractères');
         } else {
             setMsgErreur('');
     
             const data = new FormData();
             data.append('nom', nom);
+            data.append('pseudo', pseudo);
             data.append('mdp', mdp);
             data.append('role', document.querySelector('form').role.value);
     
@@ -150,10 +157,14 @@ export default function Comptes(props) {
             req.open('POST', 'http://serveur/backend-cmab/enregistrer_compte.php');
     
             req.addEventListener('load', () => {
-                setNvCompte(utilisateur);
-                fermerModalConfirmation();
-                setReussi('');
-                setModalReussi(true);
+                if (req.response.length === 0) {
+                    setNvCompte(utilisateur);
+                    fermerModalConfirmation();
+                    setReussi('');
+                    setModalReussi(true);
+                } else {
+                    setMsgErreur(req.response);
+                }
             })
     
             req.addEventListener("error", function () {
@@ -207,6 +218,7 @@ export default function Comptes(props) {
     const fermerModalConfirmation = () => {
         setModalConfirmation(false);
         setNvCompte(utilisateur);
+        setMsgErreur('');
     }
   
     const fermerModalReussi = () => {

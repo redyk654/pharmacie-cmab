@@ -11,7 +11,7 @@ import { ContextChargement } from '../../Context/Chargement';
 const medocs = {
     code: '',
     designation: '',
-    classe: '',
+    classe: 'antibiotiques',
     pu_achat: '',
     pu_vente: '',
     conditionnement: '',
@@ -433,6 +433,7 @@ export default function Approvisionner(props) {
                         date_peremption={date_peremption}
                         stock_ajoute={stock_ajoute}
                         pu_achat={pu_achat}
+                        genre={genre}
                         handleChange={handleChange}
                         ajouterMedoc={ajouterNouveauProduit}
                         nvProd={nvProd}
