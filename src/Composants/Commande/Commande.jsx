@@ -13,6 +13,7 @@ import Facture from '../Facture/Facture';
 import { Toaster, toast } from "react-hot-toast";
 import { FaPlusSquare } from "react-icons/fa";
 import { useSpring, animated } from 'react-spring';
+import CreerPatient from '../Patient/CreerPatient';
 
 // Modal.defaultStyles.overlay.backgroundColor = '#18202ebe';
 
@@ -64,15 +65,15 @@ const customStyles3 = {
 
 const customStyles4 = {
     content: {
-      top: '40%',
+      top: '50%',
       left: '50%',
       right: 'auto',
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       background: '#04a567',
-      width: '400px',
-      height: '75vh',
+      width: '90%',
+      height: '90vh',
       borderRadius: '10px'
     }, 
 };
@@ -83,7 +84,17 @@ const stylePatient = {
     border: '1px solid gray',
     overflow: 'auto',
     position: 'relative',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    width: '43%'
+}
+
+const patientTemplate = {
+    codeP: '',
+    nomP: '',
+    ageP: 0,
+    quartierP: '',
+    assuranceP: 'aucune',
+    type_assuranceP: 0
 }
 
 export default function Commande(props) {
@@ -120,8 +131,8 @@ export default function Commande(props) {
     const [modalReussi, setModalReussi] = useState(false);
     const [statePourRerender, setStatePourRerender] = useState(true);
     const [patient, setpatient] = useState('');
-    const [nomPatient, setNomPatient] = useState(false);
-    const [clientSelect, setClientSelect] = useState([]);
+    const [infosDuPatient, setInfosDuPatient] = useState(patientTemplate);
+    const [PatientChoisi, setPatientChoisi] = useState(patientTemplate);
     const [listePatient, setlistePatient] = useState([]);
     const [listePatientSauvegarde, setlistePatientSauvegarde] = useState([]);
     const [modalPatient, setModalPatient] = useState(false);
@@ -130,6 +141,8 @@ export default function Commande(props) {
     const [statu, setStatu] = useState('done');
     const [rafraichir, setRafraichir] = useState(false);
     const [enCours, setEncours] = useState(false);
+
+    const { codeP, nomP, ageP, quartierP, assuranceP, type_assuranceP } = infosDuPatient;
 
     useEffect(() => {
         startChargement();
@@ -206,7 +219,7 @@ export default function Commande(props) {
         }
 
         
-    }, [montantVerse, medocCommandes, assurance, nomPatient]);
+    }, [montantVerse, medocCommandes, assurance]);
 
     useEffect(() => {
         if(assurance.toLowerCase() !== assuranceDefaut) {
@@ -225,7 +238,7 @@ export default function Commande(props) {
     const fetchProduits = () => {
         // Récupération des médicaments dans la base via une requête Ajax
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://serveur/backend-cmab/recuperer_medoc.php');
+        req.open('GET', 'http://serveur/backend-cma/recuperer_medoc.php');
         req.addEventListener("load", () => {
             if (req.status >= 200 && req.status < 400) { // Le serveur a réussi à traiter la requête
                 setMessageErreur('');
@@ -251,7 +264,7 @@ export default function Commande(props) {
 
     const fecthCodeFacture = () => {
 
-        fetch('http://serveur/backend-cmab/recuperer_code_fac.php?id=1')
+        fetch('http://serveur/backend-cma/recuperer_code_fac.php?id=1')
         .then(response => response.json())
         .then(data => {
             setMessageErreur('');
@@ -351,16 +364,14 @@ export default function Commande(props) {
         setMessageErreur('');
         setMedoSelect(false);
         setverse('');
-        setNomPatient(false);
         setAssurance(assuranceDefaut);
         setTypeAssurance(0);
-        setClientSelect([]);
         document.querySelector('.recherche').value = "";
     }
 
     const sauvegarder = () => {
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cmab/backup.php');
+        req.open('POST', 'http://serveur/backend-cma/backup.php');
         req.send();
 
         req.addEventListener('load', () => {
@@ -390,7 +401,6 @@ export default function Commande(props) {
         data.append('id', id);
         data.append('vendeur', props.nomConnecte);
         data.append('prix_total', qtePrixTotal.prix_total);
-        data.append('patient', nomPatient);
         data.append('a_payer', qtePrixTotal.a_payer);
         data.append('montant_verse', montantVerse);
         data.append('relicat', relicat);
@@ -400,7 +410,7 @@ export default function Commande(props) {
         data.append('statu', statu);
 
         const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cmab/factures_pharmacie.php');
+        req.open('POST', 'http://serveur/backend-cma/factures_pharmacie.php');
 
         req.addEventListener('load', () => {
             majDuCodeFacture();
@@ -426,7 +436,7 @@ export default function Commande(props) {
         var newCode = idFacture + 1;
         setidFacture(newCode);
 
-        fetch(`http://serveur/backend-cmab/recuperer_code_fac.php?code_facture=${newCode}&id=1`)
+        fetch(`http://serveur/backend-cma/recuperer_code_fac.php?code_facture=${newCode}&id=1`)
         .then(response => {
             if (response.status >= 200 && response.status < 400) {
                 setMessageErreur('');
@@ -443,7 +453,7 @@ export default function Commande(props) {
     //     data.append('catego', 'pharmacie');
 
     //     const req = new XMLHttpRequest();
-    //     req.open('POST', 'http://serveur/backend-cmab/data_assurance.php');
+    //     req.open('POST', 'http://serveur/backend-cma/data_assurance.php');
 
     //     req.send(data);
 
@@ -496,12 +506,11 @@ export default function Commande(props) {
                 data2.append('prix_total', item.prix);
                 data2.append('nom_vendeur', props.nomConnecte);
                 data2.append('status_vente', 'non payé');
-                data2.append('patient', nomPatient);
                 // assurance !== assuranceDefaut && enregistrerAssurance(data2);
 
                 // Envoi des données
                 const req2 = new XMLHttpRequest();
-                req2.open('POST', 'http://serveur/backend-cmab/maj_historique.php');
+                req2.open('POST', 'http://serveur/backend-cma/maj_historique.php');
                 
                 // Une fois la requête charger on vide tout les états
                 req2.addEventListener('load', () => {
@@ -535,34 +544,39 @@ export default function Commande(props) {
     const contenuModal = () => {
             return (
             <Fragment>
-                <h2 style={{color: '#fff'}}>informations du patient</h2>
-                <div className="detail-item">
-                    <div style={{display: 'flex', flexDirection: 'column' , width: '100%', marginTop: 10, color: '#f1f1f1'}}>
-                        <label htmlFor="" style={{display: 'block',}}>Nom et prénom</label>
-                        <div>
-                            <input ref={refPatient} type="text" name="qteDesire" style={{width: '250px', height: '4vh'}} value={patient} onChange={filtrerPatient} autoComplete='off' />
-                            <button style={{cursor: 'pointer', width: '45px', height: '4vh', marginLeft: '5px'}} onClick={ajouterPatient}>OK</button>
+                    <h2 style={{color: '#fff'}}>informations du patient</h2>
+                    <div style={{display: 'flex', justifyContent: 'stretch'}}>
+                        <div style={{ width: '100%', marginTop: 10, color: '#f1f1f1'}}>
+                            <label htmlFor="" style={{display: 'block',}}>Nom et prénom</label>
+                            <div>
+                                <input ref={refPatient} type="text" name="qteDesire" style={{width: '250px', height: '4vh'}} value={patient} onChange={filtrerPatient} autoComplete='off' />
+                                <button style={{cursor: 'pointer', width: '45px', height: '4vh', marginLeft: '5px'}} onClick={ajouterPatient}>OK</button>
+                            </div>
+                            <div style={{marginTop: '10px'}}>
+                                <h2>Liste des patients</h2>
+                                <ul style={stylePatient}>
+                                    {listePatient.length > 0 && listePatient.map(item => (
+                                        <li style={{padding: '6px', color: '#0e771a', cursor: 'pointer', fontWeight: 'bold'}} onClick={(e) => selectionnePatient(e, item.assurance, item.type_assurance)} id={item.nom}>{item.nom.toUpperCase()}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
-                        {
-                            clientSelect.length > 0 && (
-                                <div style={{marginTop: '10px', lineHeight: '25px', display: `${clientSelect[0].nomAssurance === assuranceDefaut ? 'none' : 'block'}`}}>
-                                    <div>assurance <strong>{clientSelect[0].nomAssurance}</strong></div>
-                                    <div>pourcentage <strong>{clientSelect[0].type_assurance}</strong></div>
-                                </div>
-                            )
-                        }
-                        <div style={{marginTop: '10px'}}>
-                            <h2>Liste des patients</h2>
-                            <ul style={stylePatient}>
-                                {listePatient.length > 0 && listePatient.map(item => (
-                                    <li style={{padding: '6px', color: '#0e771a', cursor: 'pointer', fontWeight: 'bold'}} onClick={(e) => selectionnePatient(e, item.assurance, item.type_assurance)} id={item.nom}>{item.nom.toUpperCase()}</li>
-                                ))}
-                            </ul>
-                        </div>
+                        <CreerPatient
+                            codeP={codeP}
+                            nomP={nomP}
+                            ageP={ageP}
+                            quartierP={quartierP}
+                            assuranceP={assuranceP}
+                            type_assuranceP={type_assuranceP}
+                            handleChange={handleChange}
+                        />
                     </div>
-                </div>
             </Fragment>
         )
+    }
+
+    const handleChange = (e) => {
+        setInfosDuPatient({...infosDuPatient, [e.target.name]: e.target.value});
     }
 
     const infosPatient = () => {
@@ -571,7 +585,7 @@ export default function Commande(props) {
         setModalPatient(true);
 
         const req = new XMLHttpRequest();
-        req.open('GET', 'http://serveur/backend-cmab/gestion_patients.php');
+        req.open('GET', 'http://serveur/backend-cma/gestion_patients.php');
 
         req.addEventListener('load', () => {
             refPatient.current.focus();
@@ -594,7 +608,7 @@ export default function Commande(props) {
 
         const req = new XMLHttpRequest();
 
-        req.open('GET', `http://serveur/backend-cmab/rechercher_patient.php?str=${e.target.value}`);
+        req.open('GET', `http://serveur/backend-cma/rechercher_patient.php?str=${e.target.value}`);
 
         req.addEventListener('load', () => {
             if (req.status >= 200 && req.status < 400) {
@@ -610,7 +624,6 @@ export default function Commande(props) {
     }
 
     const ajouterPatient = () => {
-        setNomPatient(patient.trim());
         setpatient('');
 
         if(assurance.toLowerCase() !== assuranceDefaut) {
@@ -634,17 +647,16 @@ export default function Commande(props) {
 
     const enregisterPatient = () => {
         // On enregistre le patient dans la base de donnés s'il n'y est pas encore
-        if (nomPatient) {
+        if (patient) {
 
-            const patient = listePatientSauvegarde.filter(item => (item.nom.toLowerCase().indexOf(nomPatient.toLowerCase()) !== -1));
+            // const patient = listePatientSauvegarde.filter(item => (item.nom.toLowerCase().indexOf(nomPatient.toLowerCase()) !== -1));
             if(patient.length === 0) {
                 const data = new FormData();
-                data.append('nom_patient', nomPatient);
                 data.append('assurance', assuranceDefaut);
                 data.append('type_assurance', 0);
                 
                 const req = new XMLHttpRequest();
-                req.open('POST', 'http://serveur/backend-cmab/gestion_patients.php');
+                req.open('POST', 'http://serveur/backend-cma/gestion_patients.php');
 
                 req.addEventListener("load", function () {
                     // La requête n'a pas réussi à atteindre le serveur
@@ -663,7 +675,6 @@ export default function Commande(props) {
 
     const selectionnePatient = (e, nomAssurance, type_assurance) => {
         setpatient(e.target.id);
-        setClientSelect([{nomAssurance: nomAssurance, type_assurance: type_assurance}])
         setAssurance(nomAssurance);
         setTypeAssurance(type_assurance);
     }
@@ -816,9 +827,9 @@ export default function Commande(props) {
                         <button className='btn-patient' onClick={infosPatient}>Infos du patient</button>
                     </div>
                     <div style={{textAlign: 'center'}}>
-                        {nomPatient ? (
+                        {patient ? (
                             <div>
-                                Patient: <span style={{color: '#0e771a', fontWeight: '700'}}>{nomPatient.toLocaleUpperCase()}</span>
+                                Patient: <span style={{color: '#0e771a', fontWeight: '700'}}>{patient.toLocaleUpperCase()}</span>
                             </div>
                         ) : null}
                         {assurance !== assuranceDefaut ? (
@@ -867,7 +878,7 @@ export default function Commande(props) {
                             Net à payer : <span style={{color: "#0e771a", fontWeight: "600"}}>{qtePrixTotal.a_payer ? qtePrixTotal.a_payer + ' Fcfa': 0 + ' Fcfa'}</span>
                         </div>
                         <button className='bootstrap-btn annuler' onClick={annulerCommande}>Annnuler</button>
-                        <button className='bootstrap-btn valider' onClick={() => { if(medocCommandes.length > 0 && nomPatient) {afterModal();setModalConfirmation(true);} else {setMessageErreur("Entrez le nom et le prénom du patient")}}}>Valider</button>
+                        <button className='bootstrap-btn valider' onClick={() => { if(medocCommandes.length > 0) {afterModal();setModalConfirmation(true);} else {setMessageErreur("Entrez le nom et le prénom du patient")}}}>Valider</button>
 
                     </div>
                     <div>
