@@ -15,7 +15,7 @@ export default function CreerPatient(props) {
   const [msgErreur, setMsgErreur] = useState('');
 
   useEffect(() => {
-    fetch('http://serveur/backend-cmab/assurances.php?liste')
+    fetch('http://serveur/backend-cma/assurances.php?liste')
     .then(response => response.json())
     .then(data => {
       setMsgErreur('');
