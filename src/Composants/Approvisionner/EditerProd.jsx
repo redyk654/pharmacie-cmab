@@ -3,7 +3,7 @@ import React from 'react'
 export default function EditerProd(props) {
 
     const handleChange = (e) => {
-        if (props.nvProd) {
+        if (props.nvProd || e.target.name === "stock_ajoute") {
             props.handleChange(e);
         }
     }

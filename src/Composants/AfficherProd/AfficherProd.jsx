@@ -1,6 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
+import { ContextChargement } from '../../Context/Chargement';
 
 export default function AfficherProd(props) {
+
+    const {darkLight, role} = useContext(ContextChargement)
+
+
     return (
         <Fragment>
             <div className="box">
@@ -23,8 +28,22 @@ export default function AfficherProd(props) {
                     <p>{props.categorie}</p> 
                 </div>
                 <div className="item">
+                    <p>stock minimum</p>
+                    <p>{props.min_rec}</p> 
+                </div>
+                <div className="item">
                     <p>Conditionnement</p>
-                    <p>{props.conditionnement}</p>
+                    <p>{props.conditionnement}</p> 
+                </div>
+            </div>
+            <div className="box" style={{display: `${role === "admin" ? 'flex' : 'none'}`}}>
+                <div className="item">
+                    <p>Classe</p>
+                    <p>{props.classe}</p>
+                </div>
+                <div className="item">
+                    <p>Prix d'achat</p>
+                    <p>{props.pu_achat}</p>
                 </div>
                 <div className="item">
                     <p>Date depéremption</p>

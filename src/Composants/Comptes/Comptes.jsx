@@ -30,7 +30,6 @@ const customStyles2 = {
 
 const utilisateur = {
     nom: '',
-    pseudo: '',
     mdp: '',
     confirmation: ''
 }
@@ -54,7 +53,7 @@ export default function Comptes(props) {
     const [reussi, setReussi] = useState('supp');
     const [messageErreur, setMessageErreur] = useState('');
 
-    const { nom, pseudo, mdp, confirmation } = nvCompte;
+    const { nom, mdp, confirmation } = nvCompte;
 
     useEffect(() => {
         // Récupération des comptes
@@ -97,10 +96,6 @@ export default function Comptes(props) {
                         <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="text" name="nom" value={nom} onChange={handleChange} autoComplete="off" />
                     </p>
                     <p className="input-zone">
-                        <label htmlFor="">Pseudo</label>
-                        <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="text" name="pseudo" value={pseudo} onChange={handleChange} autoComplete="off" />
-                    </p>
-                    <p className="input-zone">
                         <label htmlFor="">Mot de passe</label>
                         <input style={{color: `${darkLight ? '#fff' : '#18202e'}`}} type="password" name="mdp" value={mdp} onChange={handleChange} autoComplete="off" />
                     </p>
@@ -136,10 +131,6 @@ export default function Comptes(props) {
         // Enregistrement du nouveau compte dans la base de données
         if (mdp !== confirmation) {
             setMsgErreur('Le mot de passe et le mot passe de confirmation doivent être identique');
-        } else if (pseudo.length === 0) {
-            setMsgErreur('le champ pseudo ne doit pas être vide');
-        } else if (pseudo.length > 4) {
-            setMsgErreur('le pseudo doit pas depassé 4 caractères');
         } else if (nom.length === 0) {
             setMsgErreur('le champ nom ne doit pas être vide');
         } else if (mdp.length < 4 || mdp.length > 8) {
@@ -149,7 +140,6 @@ export default function Comptes(props) {
     
             const data = new FormData();
             data.append('nom', nom);
-            data.append('pseudo', pseudo);
             data.append('mdp', mdp);
             data.append('role', document.querySelector('form').role.value);
     
