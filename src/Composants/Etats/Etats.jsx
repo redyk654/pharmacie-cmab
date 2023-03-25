@@ -19,6 +19,10 @@ export default function Etats(props) {
     let date_select2 = useRef();
     let heure_select1 = useRef();
     let heure_select2 = useRef();
+    const genres = {
+        generique: "generique",
+        specialite: "sp"
+    }
 
     const {chargement, stopChargement, startChargement} = useContext(ContextChargement);
 
@@ -28,6 +32,8 @@ export default function Etats(props) {
     const [listeComptes, setListeComptes] = useState([]);
     const [dateJour, setdateJour] = useState('');
     const [recetteTotal, setRecetteTotal] = useState(false);
+    const [recetteGenerique, setRecetteGenerique] = useState(0);
+    const [recetteSp, setRecetteSp] = useState(0);
     const [messageErreur, setMessageErreur] = useState('');
     const [dateDepart, setdateDepart] = useState('');
     const [dateFin, setdateFin] = useState('');
@@ -85,15 +91,13 @@ export default function Etats(props) {
                     if (props.role !== admin) {
                         setFiltre(true);
                         setCaissier(props.nomConnecte);
-                        setReload(!reload);
+                        // setReload(!reload);
                     } else {
-                        sethistorique(result.filter(item => (item.status_vente === "payé")));
+                        let tab = result.filter(item => (item.status_vente === "payé"));
+                        sethistorique(tab);
+                        recette = tab.reduce((acc, curr) => acc + parseInt(curr.prix_total), 0);
 
-                        result.map(item => {
-                            if (item.status_vente === "payé") {
-                                recette += parseInt(item.prix_total);
-                            }
-                        });
+                        calculerRecetteParGenre(tab);
                         setRecetteTotal(recette);
                     }
 
@@ -123,28 +127,29 @@ export default function Etats(props) {
             } else {
                 if (non_paye) {
                     tab = tab.filter(item => (item.status_vente.toLowerCase() === "non payé"));
-                    tab.map(item => {
+                    tab.forEach(item => {
                         recette += parseInt(item.prix_total);
                     });
                 } else {
                     tab = tab.filter(item => (item.status_vente.toLowerCase() === "payé"));
 
-                    tab.map(item => {
-                            recette += parseInt(item.prix_total);
+                    tab.forEach(item => {
+                        recette += parseInt(item.prix_total);
                     });
+                    calculerRecetteParGenre(tab)
 
                 }
                 setRecetteTotal(recette);
                 sethistorique(tab);
             }
         } else {
+            sethistorique(historiqueSauvegarde.filter(item => (item.status_vente.toLowerCase() === "payé")));
             let recette = 0;
-            sethistorique(historiqueSauvegarde.filter(item => (item.status_vente === "payé")));
-            historiqueSauvegarde.map(item => {
-                if (item.status_vente === "payé") {
-                    recette += parseInt(item.prix_total);
-                }
+            let tab1 = historiqueSauvegarde.filter(item => (item.status_vente.toLowerCase() === "payé"));
+            tab1.forEach(item => {
+                recette += parseInt(item.prix_total);
             });
+
             setRecetteTotal(recette);
         }
     }, [caissier, filtre, non_paye, reload]);
@@ -172,40 +177,32 @@ export default function Etats(props) {
         req.send();
     }, []);
 
+    const calculerRecetteParGenre = (tab) => {
+
+        let recetteG = tab.reduce((acc, curr) => {
+            if (curr.genre === genres.generique) {
+                return acc + parseInt(curr.prix_total)
+            } else {
+                return acc;
+            }
+        }, 0)
+
+        let recetteS = tab.reduce((acc, curr) => {
+            if (curr.genre === genres.specialite) {
+                return acc + parseInt(curr.prix_total)
+            } else {
+                return acc;
+            }
+        }, 0)
+
+        setRecetteGenerique(recetteG);
+        setRecetteSp(recetteS);
+    }
+
     const rechercherHistorique = () => {
         setSearch(!search);
         setdateDepart(date_select1.current.value + ' ' + heure_select1.current.value + ':00');
         setdateFin(date_select2.current.value + ' ' + heure_select2.current.value + ':59');
-    }
-
-    const mois = (str) => {
-
-        switch(parseInt(str.substring(3, 5))) {
-            case 1:
-                return str.substring(0, 2) + " janvier " + str.substring(6, 10);
-            case 2:
-                return str.substring(0, 2) + " fevrier " + str.substring(6, 10);
-            case 3:
-                return str.substring(0, 2) + " mars " + str.substring(6, 10);
-            case 4:
-                return str.substring(0, 2) + " avril " +  str.substring(6, 10);
-            case 5:
-                return str.substring(0, 2) + " mai " + str.substring(6, 10);
-            case 6:
-                return str.substring(0, 2) + " juin " + str.substring(6, 10);
-            case 7:
-                return str.substring(0, 2) + " juillet " + str.substring(6, 10);
-            case 8:
-                return str.substring(0, 2) + " août " + str.substring(6, 10);
-            case 9:
-                return str.substring(0, 2) + " septembre " + str.substring(6, 10);
-            case 10:
-                return str.substring(0, 2) + " octobre " + str.substring(6, 10);
-            case 11:
-                return str.substring(0, 2) + " novembre " + str.substring(6, 10);
-            case 12:
-                return str.substring(0, 2) + " décembre " + str.substring(6, 10);
-        }
     }
 
     return (
@@ -251,6 +248,8 @@ export default function Etats(props) {
                                 </p>
                             </div>
                             <button className='bootstrap-btn' onClick={rechercherHistorique}>rechercher</button>
+                            <div>Recette des génériques : <span style={{fontWeight: '700'}}>{recetteGenerique ? recetteGenerique + ' Fcfa' : '0 Fcfa'}</span></div>
+                            <div>Recette des spécialités : <span style={{fontWeight: '700'}}>{recetteSp ? recetteSp + ' Fcfa' : '0 Fcfa'}</span></div>
                             <div>Recette total : <span style={{fontWeight: '700'}}>{recetteTotal ? recetteTotal + ' Fcfa' : '0 Fcfa'}</span></div>
                         </div>
                         <div className='erreur-message'>{messageErreur}</div>
@@ -294,9 +293,11 @@ export default function Etats(props) {
                         ref={componentRef}
                         dateDepart={dateDepart}
                         dateFin={dateFin}
-                        recetteTotal={recetteTotal}
-                        historique={historique}
                         caissier={caissier}
+                        historique={historique}
+                        recetteTotal={recetteTotal}
+                        recetteGenerique={recetteGenerique}
+                        recetteSp={recetteSp}
                     />
                 </div>
             </section>
