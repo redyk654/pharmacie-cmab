@@ -107,7 +107,7 @@ export default function Historique(props) {
             data.append('pu_vente', puVente);
 
             const req = new XMLHttpRequest();
-            req.open('POST', 'http://serveur/backend-cmab/gestion_stock.php?rem=inventaire');
+            req.open('POST', 'http://serveur/backend-cmab/gestion_stock.php?rem=correction');
     
             req.addEventListener('load', () => {
                 fermerModalConfirmation();

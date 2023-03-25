@@ -109,6 +109,7 @@ export default function Comptes(props) {
                             <option value="admin">admin</option>
                             <option value="major">major</option>
                             <option value="vendeur">vendeur</option>
+                            <option value="medecin">medecin</option>
                         </select>
                     </p>
                 </div>
