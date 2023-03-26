@@ -59,7 +59,7 @@
     border-radius: 0px 0px 10px 10px;
 }
 
-.commande .left-side .liste-medoc ul .loader {
+.loader {
     position: absolute;
     bottom: 45%;
     left: 31%;

@@ -249,7 +249,7 @@ export default function Approvisionner(props) {
 
     const genererId = () => {
         // Fonction pour générer un identifiant unique pour une commande
-        return Math.floor((1 + Math.random()) * 0x10000)
+        return Math.floor((1 + Math.random()) * 0x10000000)
                .toString(16)
                .substring(1) + montantCommande;
 
