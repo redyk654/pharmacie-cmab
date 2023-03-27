@@ -317,7 +317,7 @@ export default function Activites(props) {
             <Modal
                 isOpen={modalInventaire}
                 style={customStyles2}
-                onRequestClose={fermerModalInventaire}
+                // onRequestClose={fermerModalInventaire}
             >
                 <SaveInventaire
                     listeProds={listeSauvegarde}
