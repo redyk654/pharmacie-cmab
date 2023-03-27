@@ -1,0 +1,19 @@
+.btn-icon {
+    background-color: #012557;
+    color: #f1f1f1;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 20px;
+    margin: 0px 5px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-icon:hover {
+    text-transform: scale(1.2);
+}

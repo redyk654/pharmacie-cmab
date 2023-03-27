@@ -1,3 +1,25 @@
+import { toast } from "react-hot-toast";
+
+const toastAlerteStock = (msg, bg) => {
+    toast.error(msg, {
+        style: {
+            fontWeight: 'bold',
+            fontSize: '18px',
+            color: '#fff',
+            backgroundColor: bg,
+            letterSpacing: '1px',
+        },
+        
+    });
+}
+
+const getMsgAlerteStock = (designation, stock) => {
+    if (parseInt(stock) === 0)
+        return 'le stock de ' + designation + ' est épuisé ! Pensez à vous approvisionner';
+    else
+        return designation + ' bientôt en rupture de stock ! Pensez à vous approvisionner';
+}
+
 export function mois(str) {
 
     switch(parseInt(str.substring(3, 5))) {
@@ -56,4 +78,39 @@ export function mois2(str) {
         case 12:
             return str.substring(8, 10) + " décembre " + str.substring(0, 4);
     }
+}
+
+export const colors = {
+    danger: "#dd4c47",
+    undef: '',
+}
+
+export function isAlertStockShow (produit) {
+    if (parseInt(produit.en_stock) === 0) {
+        var msgAlerteStock = getMsgAlerteStock(produit.designation, produit.en_stock);
+        toastAlerteStock(msgAlerteStock, '#dd4c47');
+    } else if (parseInt(produit.en_stock) <= parseInt(produit.min_rec)) {
+        var msgAlerteStock = getMsgAlerteStock(produit.designation, produit.en_stock);
+        toastAlerteStock(msgAlerteStock, '#FFB900');
+    }
+}
+
+export function selectProd (val, liste) {
+    return liste.filter(item => (item.id == val))[0];
+}
+
+export function currentDateString() {
+    return mois(new Date().toLocaleDateString());
+}
+
+export function genererId() {
+    // Fonction pour générer un identifiant unique pour une commande
+    return Math.floor((1 + Math.random()) * 0x10000000)
+           .toString(16)
+           .substring(1);
+
+}
+
+export function filtrerListe(prop, val, liste) {
+    return liste.filter(item => (item[prop].toLowerCase().includes(val.toLowerCase())));
 }

@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import './Activites.css';
 import { ContextChargement } from '../../Context/Chargement';
-import { mois } from "../../shared/Globals";
+import { isAlertStockShow, mois, selectProd, genererId } from "../../shared/Globals";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
 import Modal from 'react-modal';
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useSpring, animated } from 'react-spring';
+import AfficherListeProdInventaires from '../../shared/AfficherListeProdInventaires';
+import SaveInventaire from '../SaveInventaire/SaveInventaire';
+
+Modal.setAppElement('#root')
 
 const customStyles2 = {
     content: {
@@ -55,12 +58,10 @@ export default function Activites(props) {
     const [qteEntre, setQteEntre] = useState(0);
     const [qteSortie, SetQteSortie] = useState(0);
     const [designation, setDesignation] = useState('');
-    const [stockSorti, setStockSorti] = useState(false);
     const [stockRestant, setStockRestant] = useState(false);
     const [datePeremption, setDatePeremtion] = useState(false);
     const [dateApprov, setDateApprov] = useState(false);
     const [dateAffiche, setDateAffiche] = useState('');
-    const [alerteStock, setAlerteStock] = useState('');
     const [modalInventaire, setModalInventaire] = useState(false);
     const [non_paye, setNonPaye] = useState(false);
     const [ecart, setEcart] = useState(0);
@@ -68,6 +69,7 @@ export default function Activites(props) {
     const [modalConfirmation, setModalConfirmation] = useState(false);
     const [state, setState] = useState(false);
     const [messageErreur, setMessageErreur] = useState('');
+    const [enCours, setEnCours] = useState(false);
 
     useEffect(() => {
         startChargement();
@@ -80,7 +82,9 @@ export default function Activites(props) {
                 const result = JSON.parse(req.responseText);
                 setListeHistorique(result);
                 setListeSauvegarde(result);
-                stopChargement();
+                setTimeout(() => {
+                    stopChargement();
+                }, 500);
             });
 
             req.send();
@@ -158,7 +162,7 @@ export default function Activites(props) {
     }, [medocSelectionne]);
 
     const filtrerListe = (e) => {
-        const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1 || item.id === e.target.value));
+        const medocFilter = listeSauvegarde.filter(item => (item.designation.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1));
         setListeHistorique(medocFilter);
     }
 
@@ -172,33 +176,27 @@ export default function Activites(props) {
 
     const afficherHistorique = (e) => {
         setDateApprov(false);
-        const medocSelectionne = listeHistorique.filter(item => (item.id == e.target.value));
+        const medocSelectionne = selectProd(e.target.value, listeHistorique);
 
-        if (parseInt(medocSelectionne[0].en_stock) === 0) {
-            var msgAlerteStock = 'le stock de ' + medocSelectionne[0].designation + ' est épuisé ! Pensez à vous approvisionner';
-            toastAlerteStock(msgAlerteStock, '#dd4c47');
-        } else if (parseInt(medocSelectionne[0].en_stock) <= parseInt(medocSelectionne[0].min_rec)) {
-            var msgAlerteStock = medocSelectionne[0].designation + ' bientôt en rupture de stock ! Pensez à vous approvisionner';
-            toastAlerteStock(msgAlerteStock, '#FFB900');
-        }
+        isAlertStockShow(medocSelectionne)
 
-        setStockRestant(medocSelectionne[0].en_stock);
-        setDatePeremtion(medocSelectionne[0].date_peremption);
+        setStockRestant(medocSelectionne.en_stock);
+        setDatePeremtion(medocSelectionne.date_peremption);
 
         const data1 = new FormData();
-        data1.append('id', medocSelectionne[0].id);
+        data1.append('id', medocSelectionne.id);
 
         const req1 = new XMLHttpRequest();
         req1.open('POST', 'http://serveur/backend-cmab/gestion_stock.php');
         req1.addEventListener('load', () => {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);
-                setIdProd(medocSelectionne[0].id)
-                setPuVente(medocSelectionne[0].pu_vente)
+                setIdProd(medocSelectionne.id)
+                setPuVente(medocSelectionne.pu_vente)
                 setMedocSelectionne(result);
                 setMedocSelectionneSauvegarde(result);
-                setNonPaye(true);
-                setDesignation(medocSelectionne[0].designation)
+                // setNonPaye(true);
+                setDesignation(medocSelectionne.designation)
             } else {
                 console.error(req1.status + " " + req1.statusText);
             }
@@ -243,18 +241,74 @@ export default function Activites(props) {
         setStockPhy(parseInt(stockRestant) + ecart);
     }
 
-    const toastAlerteStock = (msg, bg) => {
-        toast.error(msg, {
-            style: {
-                fontWeight: 'bold',
-                fontSize: '18px',
-                color: '#fff',
-                backgroundColor: bg,
-                letterSpacing: '1px',
-            },
-            
+    const sauvegarderInfosInventaire = () => {
+        setEnCours(true);
+        const idInventaire = genererId()
+
+        const infosInventaire = {
+            id: idInventaire,
+            auteur: props.nomConnecte,
+        }
+
+        const data = new FormData();
+        data.append('infosInv', JSON.stringify(infosInventaire));
+
+        const req = new XMLHttpRequest();
+
+        req.open('POST', 'http://serveur/backend-cmab/sauvegarder_inventaire.php');
+        req.addEventListener('load', () => {
+            if (req.status >= 200 && req.status < 400) {
+                sauvegarderProduitsInventaire(idInventaire)
+            } else {
+                console.error(req.status + " " + req.statusText);
+            }
         });
+
+        req.addEventListener("error", function () {
+            // La requête n'a pas réussi à atteindre le serveur
+            setMessageErreur('Erreur réseau');
+        });
+
+        req.send(data);
     }
+
+    const sauvegarderProduitsInventaire = (idInventaire) => {
+        let i = 0;
+
+        listeSauvegarde.forEach(produit => {
+            const prod = {
+                id: idInventaire,
+                id_prod: produit.id,
+                designation: produit.designation,
+                en_stock: produit.en_stock,
+                genre: produit.genre,
+            }
+    
+            const data = new FormData();
+            data.append('prod', JSON.stringify(prod));
+
+            const req = new XMLHttpRequest();
+    
+            req.open('POST', 'http://serveur/backend-cmab/sauvegarder_inventaire.php');
+            req.addEventListener('load', () => {
+                if (req.status >= 200 && req.status < 400) {
+                    i++;
+                    if (i === listeSauvegarde.length) {
+                        setEnCours(false);
+                        fermerModalInventaire();
+                    }
+                }
+            });
+    
+            req.addEventListener("error", function () {
+                // La requête n'a pas réussi à atteindre le serveur
+                setMessageErreur('Erreur réseau');
+            });
+    
+            req.send(data);
+        })
+
+    } 
 
     return (
         <animated.div style={props1}>
@@ -265,8 +319,12 @@ export default function Activites(props) {
                 style={customStyles2}
                 onRequestClose={fermerModalInventaire}
             >
-                <h2 style={{color: '#fff'}}>{alerteStock}</h2>
-                <button style={{width: '20%', height: '5vh', cursor: 'pointer', marginRight: '15px', fontSize: 'large'}} onClick={fermerModalInventaire}>Fermer</button>
+                <SaveInventaire
+                    listeProds={listeSauvegarde}
+                    handleClick={sauvegarderInfosInventaire}
+                    enCours={enCours}
+                    fermerModalInventaire={fermerModalInventaire}
+                />
             </Modal>
             <Modal
                 isOpen={modalConfirmation}
@@ -312,9 +370,10 @@ export default function Activites(props) {
                     </p>
                     <h1>Produits</h1>
                     <ul>
-                        {chargement ? <div className="loader"><Loader type="TailSpin" color="#03ca7e" height={100} width={100}/></div> : listeHistorique.map(item => (
-                            <li value={item.id} key={item.id} onClick={afficherHistorique} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? '#dd4c47' : ''}`}}>{item.designation.toLowerCase() + ' (' + item.en_stock + ')'}</li>
-                            ))}
+                        <AfficherListeProdInventaires
+                            listeHistorique={listeHistorique}
+                            afficherHistorique={afficherHistorique}
+                        />
                     </ul>
                 </div>
                 <div className="table-commandes">
@@ -329,9 +388,9 @@ export default function Activites(props) {
                         <label htmlFor="">Date : </label>
                         <input type="date" id="" ref={date_filtre} onChange={(e) => setDateApprov(e.target.value)} />
                     </div>
-                    <div className="entete-historique">
+                    {/* <div className="entete-historique">
                         Listing du : <span style={{fontWeight: '600'}}>{mois(dateAffiche)}</span>
-                    </div>
+                    </div> */}
                     <div className="entete-historique">Désignation: <span style={{fontWeight: '600'}}>{designation}</span></div>
                     <div className="entete-historique">Date péremption : <span style={{fontWeight: '600'}}>{datePeremption && datePeremption}</span></div>
                     <div className="entete-historique">

@@ -5,7 +5,7 @@ import { useSpring, animated } from 'react-spring';
 import { ContextChargement } from '../../Context/Chargement';
 import { mois } from '../../shared/Globals';
 
-export default function Bordereau(props) {
+export default function Bordereau() {
 
     const props1 = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } });
 
@@ -47,8 +47,8 @@ export default function Bordereau(props) {
 
         req.addEventListener('load', () => {
             const result = JSON.parse(req.responseText);
-            const infos = listeCommandes.filter(item => e.target.id == item.id_commande);
-            setInfosCommande(infos[0]);
+            const infos = listeCommandes.filter(item => e.target.id == item.id_commande)[0];
+            setInfosCommande(infos);
             setCommandeSelectionne(result);
         });
 

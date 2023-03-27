@@ -30,16 +30,19 @@
     padding: 10px;
 }
 
-.commande .left-side .search-zone input {
+.search-zone input {
   width: 90%;
   height: 5vh;
   outline: none;
   border-radius: 5px;
   color: #038654;
   font-size: 17px;
+  padding-left: 6px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-.commande .left-side .search-zone input:focus {
+.search-zone input:focus {
     border: 1px solid #1beabd;
     box-shadow: inset 0 0 0 3px #fff,
 			/* 0 0 0 4px #fff, */
