@@ -13,7 +13,6 @@ import Inventaires from '../Inventaires/Inventaires';
 export default function Historique(props) {
 
     const {darkLight} = useContext(ContextChargement)
-
     const [onglet, setOnglet] = useState(1);
     let contenu;
     
