@@ -1,0 +1,24 @@
+.modal-inventaire table thead {
+    font-weight: 600;
+    background: #03ca7e;
+    color: #f1f1f1;
+    position: sticky;
+    top: 0;
+    padding: 10px;
+}
+
+.modal-inventaire table tbody tr:hover {
+    background-color: #05a065;
+    color: #f1f1f1;
+    font-weight: 600;
+}
+
+.modal-inventaire table tbody {
+    position: relative;
+}
+
+.modal-inventaire table tbody .loader {
+    position: absolute;
+    left: 45%;
+    top: 160px;
+}

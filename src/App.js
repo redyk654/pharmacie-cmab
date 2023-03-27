@@ -21,12 +21,11 @@ function App() {
   const vendeur = "vendeur";
   const medecin = "medecin";
 
-  const {darkLight} = useContext(ContextChargement)
+  const {darkLight, role, setRole} = useContext(ContextChargement)
 
   const [onglet, setOnglet] = useState(1);
   const [connecter, setConnecter] = useState(false);
   const [nomConnecte, setNomConnecte] = useState('');
-  const [role, setRole] = useState('');
 
   useEffect(() => {
     if(role === admin) {

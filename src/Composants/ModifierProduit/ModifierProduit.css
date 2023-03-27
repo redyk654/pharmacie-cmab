@@ -17,6 +17,7 @@
     background: #03ca7e;
     color: #f1f1f1;
     text-align: center;
+    border-radius: 10px 10px 0px 0px;
 }
 
 .modif-produit .search-zone input {
@@ -67,7 +68,7 @@
 }
 
 .modif-produit .details-prod .box p {
-    width: 320px;
+    width: 22vw;
 }
 
 .modif-produit .details-prod .box .item p:first-child {

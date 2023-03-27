@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { mois, mois2 } from "../../shared/Globals";
 
 const styles = {
     // display: 'flex',
@@ -50,66 +51,6 @@ export default class ImprimerEtat extends Component {
 
         return designation_extrait;
     }
-    
-    mois = (str) => {
-
-        switch(parseInt(str.substring(3, 5))) {
-            case 1:
-                return str.substring(0, 2) + " janvier " + str.substring(6, 10);
-            case 2:
-                return str.substring(0, 2) + " fevrier " + str.substring(6, 10);
-            case 3:
-                return str.substring(0, 2) + " mars " + str.substring(6, 10);
-            case 4:
-                return str.substring(0, 2) + " avril " +  str.substring(6, 10);
-            case 5:
-                return str.substring(0, 2) + " mai " + str.substring(6, 10);
-            case 6:
-                return str.substring(0, 2) + " juin " + str.substring(6, 10);
-            case 7:
-                return str.substring(0, 2) + " juillet " + str.substring(6, 10);
-            case 8:
-                return str.substring(0, 2) + " août " + str.substring(6, 10);
-            case 9:
-                return str.substring(0, 2) + " septembre " + str.substring(6, 10);
-            case 10:
-                return str.substring(0, 2) + " octobre " + str.substring(6, 10);
-            case 11:
-                return str.substring(0, 2) + " novembre " + str.substring(6, 10);
-            case 12:
-                return str.substring(0, 2) + " décembre " + str.substring(6, 10);
-        }
-    }
-
-    mois2 = (str) => {
-
-        switch(parseInt(str.substring(5, 7))) {
-            case 1:
-                return str.substring(8, 10) + " janvier " + str.substring(0, 4);
-            case 2:
-                return str.substring(8, 10) + " fevrier " + str.substring(0, 4);
-            case 3:
-                return str.substring(8, 10) + " mars " + str.substring(0, 4);
-            case 4:
-                return str.substring(8, 10) + " avril " +  str.substring(0, 4);
-            case 5:
-                return str.substring(8, 10) + " mai " + str.substring(0, 4);
-            case 6:
-                return str.substring(8, 10) + " juin " + str.substring(0, 4);
-            case 7:
-                return str.substring(8, 10) + " juillet " + str.substring(0, 4);
-            case 8:
-                return str.substring(8, 10) + " août " + str.substring(0, 4);
-            case 9:
-                return str.substring(8, 10) + " septembre " + str.substring(0, 4);
-            case 10:
-                return str.substring(8, 10) + " octobre " + str.substring(0, 4);
-            case 11:
-                return str.substring(8, 10) + " novembre " + str.substring(0, 4);
-            case 12:
-                return str.substring(8, 10) + " décembre " + str.substring(0, 4);
-        }
-    }
 
     render() {
         return (
@@ -134,10 +75,10 @@ export default class ImprimerEtat extends Component {
                     <div style={{textAlign: 'center', width: '410px'}}>
                         <div style={{marginTop: 5}}>
                             tiré le &nbsp;
-                            <span style={{fontWeight: '600', marginTop: '15px'}}>{this.props.infoRecette ? this.mois(this.props.infoRecette[0].date_heure.substring(0, 11)) : (this.mois(new Date().toLocaleDateString()) + ' ')} à {this.props.infoRecette ? this.props.infoRecette[0].date_heure.substring(11,) : (' ' + new Date().getHours() + 'h' + new Date().getMinutes() + 'min')}</span>
+                            <span style={{fontWeight: '600', marginTop: '15px'}}>{this.props.infoRecette ? mois(this.props.infoRecette[0].date_heure.substring(0, 11)) : (mois(new Date().toLocaleDateString()) + ' ')} à {this.props.infoRecette ? this.props.infoRecette[0].date_heure.substring(11,) : (' ' + new Date().getHours() + 'h' + new Date().getMinutes() + 'min')}</span>
                         </div>
                         <div style={{marginTop: 5}}>Service fait par <span style={{fontWeight: '600', marginTop: '15px'}}>{this.props.caissier}</span></div>
-                        <div style={{marginTop: 5}}>Du <span style={{fontWeight: '600', marginTop: '15px'}}>{this.mois2(this.props.dateDepart)} à {this.props.dateDepart.substring(10, 13)}h{this.props.dateDepart.substring(14, 16)}min</span> Au <strong>{this.mois2(this.props.dateFin)} à {this.props.dateFin.substring(10, 13)}h{this.props.dateFin.substring(14, 16)}min</strong></div>
+                        <div style={{marginTop: 5}}>Du <span style={{fontWeight: '600', marginTop: '15px'}}>{mois2(this.props.dateDepart)} à {this.props.dateDepart.substring(10, 13)}h{this.props.dateDepart.substring(14, 16)}min</span> Au <strong>{mois2(this.props.dateFin)} à {this.props.dateFin.substring(10, 13)}h{this.props.dateFin.substring(14, 16)}min</strong></div>
                         <div style={{textAlign: 'center', marginBottom: 15}}>
                             <table style={table_styles}>
                                 <thead>
@@ -157,6 +98,8 @@ export default class ImprimerEtat extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        <div style={{marginTop: 15}}>Génériques : <strong>{this.props.recetteGenerique ? this.props.recetteGenerique + ' Fcfa' : 0 + ' Fcfa'}</strong></div>
+                        <div style={{marginTop: 15}}>Specialités : <strong>{this.props.recetteSp ? this.props.recetteSp + ' Fcfa' : 0 + ' Fcfa'}</strong></div>
                         <div style={{marginTop: 15}}>Total : <strong>{this.props.recetteTotal ? this.props.recetteTotal + ' Fcfa' : 0 + ' Fcfa'}</strong></div>
                     </div>
                 </div>

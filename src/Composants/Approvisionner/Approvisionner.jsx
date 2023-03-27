@@ -11,7 +11,7 @@ import { ContextChargement } from '../../Context/Chargement';
 const medocs = {
     code: '',
     designation: '',
-    classe: '',
+    classe: 'antibiotiques',
     pu_achat: '',
     pu_vente: '',
     conditionnement: '',
@@ -152,6 +152,14 @@ export default function Approvisionner(props) {
         setListeProduit(medocFilter);
     }
 
+    const trierAffichage = (e) => {
+        if (e.target.value === "tout") {
+            setListeProduit(listeSauvegarde);
+        } else {
+            setListeProduit(listeSauvegarde.filter(item => (item.genre.toLowerCase() == e.target.value)));
+        }
+    }
+
     const handleChange = (e) => {
         if (e.target.name === "code") {
             setInfosMedoc({...infosMedoc, [e.target.name]: e.target.value.toUpperCase()});
@@ -165,6 +173,15 @@ export default function Approvisionner(props) {
         const medocSelect = listeProduit.filter(item => (item.id == e.target.value));
         setMedocSelectionne(medocSelect[0]);
         setInfosMedoc(medocSelect[0]);
+    }
+
+    const calculerMontantCommande = (produitsCommandes) => {
+        var total = 0;
+        produitsCommandes.forEach(produit => {
+            total += (parseInt(produit.pu_achat)*parseInt(produit.stock_ajoute));
+        });
+
+        setMontantCommande(total);
     }
 
     const ajouterMedoc = (e) => {
@@ -187,6 +204,7 @@ export default function Approvisionner(props) {
                     filtrerDoublons.push(infosMedoc);
                     setProduitsCommandes(filtrerDoublons);
                     setInfosMedoc(medocs);
+                    calculerMontantCommande(filtrerDoublons);
                     document.querySelector('.rechercher').value = "";
                     document.querySelector('.rechercher').focus();
                 } else {
@@ -231,7 +249,7 @@ export default function Approvisionner(props) {
 
     const genererId = () => {
         // Fonction pour générer un identifiant unique pour une commande
-        return Math.floor((1 + Math.random()) * 0x10000)
+        return Math.floor((1 + Math.random()) * 0x10000000)
                .toString(16)
                .substring(1) + montantCommande;
 
@@ -433,6 +451,7 @@ export default function Approvisionner(props) {
                         date_peremption={date_peremption}
                         stock_ajoute={stock_ajoute}
                         pu_achat={pu_achat}
+                        genre={genre}
                         handleChange={handleChange}
                         ajouterMedoc={ajouterNouveauProduit}
                         nvProd={nvProd}
@@ -451,15 +470,22 @@ export default function Approvisionner(props) {
                     </div>
                     <div className="montant-commande">
                         <label htmlFor="">montant de la commande : </label>
-                        <input type="number" name="montant_commande" value={montantCommande} onChange={(e) => setMontantCommande(e.target.value)} />
+                        <input type="number" name="montant_commande" value={montantCommande} />
                     </div>
                     <p className="search-zone">
                         <input type="text" className="rechercher" placeholder="recherchez un produit" onChange={filtrerListe} />
                     </p>
+                    <p>afficher: &nbsp;
+                        <select name="genre" id="" onChange={trierAffichage}>
+                            <option value="tout">tout</option>
+                            <option value="generique">générique</option>
+                            <option value="sp">spécialité</option>
+                        </select>
+                    </p>
                     <h1>Produits en stock</h1>
                     <ul>
                         {afficherListe ? listeProduit.map(item => (
-                            <li value={item.id} key={item.id} onClick={afficherDetails} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? 'red' : ''}`}}>{item.designation.toLowerCase()}</li>
+                            <li value={item.id} key={item.id} onClick={afficherDetails} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? '#dd4c47' : ''}`}}>{item.designation.toLowerCase()}</li>
                             )) : null}
                     </ul>
                 </div>

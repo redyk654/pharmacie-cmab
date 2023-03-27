@@ -243,11 +243,11 @@ export default function ModifierProduit() {
                     <button style={{width: '10%', height: '5vh', cursor: 'pointer', marginRight: '10px'}} onClick={fermerModalReussi}>OK</button>
                 </Modal>
                 <div className="col-1">
-                    <h1>Produits en stock</h1>
-                    {/* <button onClick={supprimerProduitEpuise}>Vider</button> */}
                     <p className="search-zone">
                         <input type="text" placeholder="recherchez un produit" onChange={filtrerListe} />
                     </p>
+                    <h1>Produits en stock</h1>
+                    {/* <button onClick={supprimerProduitEpuise}>Vider</button> */}
                     <ul>
                         {afficherListe ? listeProduit.map(item => (
                             <li value={item.id} key={item.id} onClick={selectionneProduit} style={{color: `${parseInt(item.en_stock) < parseInt(item.min_rec) ? '#dd4c47' : ''}`}}>{item.designation.toLowerCase()}</li>
@@ -264,6 +264,7 @@ export default function ModifierProduit() {
                                 classe={classe}
                                 categorie={categorie}
                                 pu_vente={pu_vente}
+                                pu_achat={pu_achat}
                                 min_rec={min_rec}
                                 conditionnement={conditionnement}
                                 date_peremption={date_peremption}
@@ -288,6 +289,7 @@ export default function ModifierProduit() {
                                 categorie={item.categorie}
                                 conditionnement={item.conditionnement}
                                 date_peremption={item.date_peremption}
+                                classe={item.classe}
                                 />
                             ))}
                         </div>

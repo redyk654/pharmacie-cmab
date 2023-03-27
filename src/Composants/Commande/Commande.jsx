@@ -136,6 +136,7 @@ export default function Commande(props) {
         // Récupération des médicaments dans la base via une requête Ajax
         if (date_j.getTime() <= date_e.getTime()) {
             fetchProduits();
+            fecthCodeFacture();
         } else {
             setTimeout(() => {
                 props.setConnecter(false);
@@ -246,7 +247,20 @@ export default function Commande(props) {
         });
 
         req.send();
-    } 
+    }
+
+    const fecthCodeFacture = () => {
+
+        fetch('http://serveur/backend-cmab/recuperer_code_fac.php?id=1')
+        .then(response => response.json())
+        .then(data => {
+            setMessageErreur('');
+            setidFacture(parseInt(data[0].code_facture));
+        })
+        .catch(error => {
+            setMessageErreur('Erreur réseau');
+        })
+    }
 
     // permet de récolter les informations sur le médicament sélectioné
     const afficherInfos = (e) => {
@@ -389,13 +403,13 @@ export default function Commande(props) {
         req.open('POST', 'http://serveur/backend-cmab/factures_pharmacie.php');
 
         req.addEventListener('load', () => {
+            majDuCodeFacture();
             setMedoSelect(false);
             setMessageErreur('');
             toastVenteEnregistrer();
             setModalConfirmation(false);
             setEncours(false);
             annulerCommande();
-            console.log(req.responseText);
         });
 
         req.addEventListener("error", function () {
@@ -405,6 +419,24 @@ export default function Commande(props) {
 
         req.send(data);
 
+    }
+
+    const majDuCodeFacture = () => {
+
+        var newCode = idFacture + 1;
+        setidFacture(newCode);
+
+        fetch(`http://serveur/backend-cmab/recuperer_code_fac.php?code_facture=${newCode}&id=1`)
+        .then(response => {
+            if (response.status >= 200 && response.status < 400) {
+                setMessageErreur('');
+            } else {
+                setMessageErreur('Une erreur est survenue lors de la facturation');
+            }
+        })
+        .catch(error => {
+            setMessageErreur('Erreur réseau');
+        })
     }
 
     // const enregistrerAssurance = (data) => {
@@ -449,9 +481,6 @@ export default function Commande(props) {
                 item.stock_restant = parseInt(item.en_stock) - parseInt(item.qte_commander);
             });
 
-            const id = idUnique();
-            setidFacture(id);
-
             let i = 0;
             medocCommandes.map(item => {
 
@@ -459,7 +488,7 @@ export default function Commande(props) {
                 data2.append('code', item.code);
                 data2.append('designation', item.designation);
                 data2.append('id_prod', item.id);
-                data2.append('id_facture', id);
+                data2.append('id_facture', idFacture + 'P');
                 data2.append('categorie', item.categorie);
                 data2.append('genre', item.genre);
                 data2.append('date_peremption', item.date_peremption);
@@ -489,7 +518,7 @@ export default function Commande(props) {
                         });
                         i++;
                         if (i === medocCommandes.length) {
-                            enregisterFacture(id);
+                            enregisterFacture(idFacture + 'P');
                         }
                     }
                 });
@@ -847,7 +876,7 @@ export default function Commande(props) {
                             ref={componentRef}
                             medocCommandes={medocCommandes}
                             nomConnecte={props.nomConnecte} 
-                            idFacture={idFacture}
+                            idFacture={idFacture + 'P'}
                             prixTotal={qtePrixTotal.prix_total}
                             aPayer={qtePrixTotal.a_payer}
                             montantVerse={montantVerse}
