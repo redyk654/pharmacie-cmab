@@ -290,6 +290,7 @@ export default function ModifierProduit() {
                                 conditionnement={item.conditionnement}
                                 date_peremption={item.date_peremption}
                                 classe={item.classe}
+                                genre={item.genre}
                                 />
                             ))}
                         </div>

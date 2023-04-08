@@ -801,6 +801,7 @@ export default function Commande(props) {
                         categorie={item.categorie}
                         conditionnement={item.conditionnement}
                         date_peremption={item.date_peremption}
+                        genre={item.genre}
                         />
                     ))}
                 </div>

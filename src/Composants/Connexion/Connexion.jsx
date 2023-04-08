@@ -27,8 +27,8 @@ export default function Connexion(props) {
         e.preventDefault();
 
         const data = new FormData();
-        data.append('nom', nom);
-        data.append('mdp', mdp);
+        data.append('nom', nom.trim());
+        data.append('mdp', mdp.trim());
 
         const req = new XMLHttpRequest();
         req.open('POST', 'http://serveur/backend-cmab/connexion.php');
