@@ -183,11 +183,8 @@ export default function Activites(props) {
         setStockRestant(medocSelectionne.en_stock);
         setDatePeremtion(medocSelectionne.date_peremption);
 
-        const data1 = new FormData();
-        data1.append('id', medocSelectionne.id);
-
         const req1 = new XMLHttpRequest();
-        req1.open('POST', 'http://serveur/backend-cmab/gestion_stock.php');
+        req1.open('POST', `http://serveur/backend-cmab/gestion_stock.php?id=${medocSelectionne.id}`);
         req1.addEventListener('load', () => {
             if (req1.status >= 200 && req1.status < 400) {
                 const result = JSON.parse(req1.responseText);
@@ -207,7 +204,7 @@ export default function Activites(props) {
             setMessageErreur('Erreur réseau');
         });
 
-        req1.send(data1);
+        req1.send();
     }
 
     const handleChange = (e) => {
