@@ -1,7 +1,5 @@
 import React, { useState, useRef, useContext } from 'react';
 import './Entete.css';
-import Recette from '../Recette/Recette';
-import ReactToPrint from 'react-to-print';
 import Modal from 'react-modal';
 import { FaMoon, FaSignOutAlt, FaSun } from 'react-icons/fa';
 import { ContextChargement } from '../../Context/Chargement';
@@ -54,50 +52,6 @@ export default function Entete(props) {
 
     const { ancien, nouveau, confirmation } = nouveauMdp;
 
-    const calculRecetteJour = () => {
-        // Récupération de la recette en cours du vendeur
-        setModalReussi(true);
-        const heure = new Date();
-
-        const data = new FormData();
-        data.append('nom', props.nomConnecte);
-
-        const req2 = new XMLHttpRequest();
-        if (heure.getHours() <= 12 && heure.getHours() >= 6) {
-            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=nuit');
-            req2.send(data);
-        } else if (heure.getHours() >= 14 && heure.getHours() <= 20) {
-            req2.open('POST', 'http://serveur/backend-cmab/recette_jour.php?service=jour');
-            req2.send(data);
-        }
-
-        req2.addEventListener('load', () => {
-            if(req2.status >= 200 && req2.status < 400) {
-                const result = JSON.parse(req2.responseText);
-                setRecetteJour(result);
-                console.log(recettejour.recette);
-            }
-        });
-    }
-
-    const enregisterRecette = () => {
-        // Enreistrement de la recette dans la base de données
-        const data = new FormData();
-        data.append('nom', props.nomConnecte);
-        data.append('montant', recettejour.recette);
-
-        const req = new XMLHttpRequest();
-        req.open('POST', 'http://serveur/backend-cmab/gestion_recette.php');
-
-        req.addEventListener('load', () => {
-            if (req.status >= 200 && req.status < 400) {
-                deconnection();
-            }
-        })
-
-        req.send(data);
-    }
-
     const modifierMotDePasse = (e) => {
         // Modification du mot de passe
 
@@ -133,6 +87,11 @@ export default function Entete(props) {
             setMsgErreur('Le mot de passe et le mot passe de confirmation doivent être identique')
         }
     }
+
+    // const verifierMaj = () => {
+    //     // autoUpdater.checkForUpdates();
+    //     // console.log(autoUpdater);
+    // }
 
     const handleChange = (e) => {
         setNouveauMdp({...nouveauMdp, [e.target.name]: e.target.value});
@@ -222,13 +181,6 @@ export default function Entete(props) {
                         
                     </button>
                 </div>
-            </div>
-            <div style={{display: 'none'}}>
-                <Recette
-                    ref={componentRef}
-                    recette={recettejour.recette}
-                    caissier={props.nomConnecte}
-                />
             </div>
         </header>
     )
