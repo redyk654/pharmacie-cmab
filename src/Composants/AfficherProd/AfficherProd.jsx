@@ -3,6 +3,12 @@ import { ContextChargement } from '../../Context/Chargement';
 
 export default function AfficherProd(props) {
 
+    const genres = {
+        "": "non répertorié",
+        sp: "spécialité",
+        generique: "générique",
+    }
+
     const {darkLight, role} = useContext(ContextChargement)
 
 
@@ -20,6 +26,10 @@ export default function AfficherProd(props) {
                 <div className="item">
                     <p>En stock</p>
                     <p style={{color: `${parseInt(props.en_stock) < parseInt(props.min_rec) ? '#ec4641' : ''}`}}>{props.en_stock}</p>
+                </div>
+                <div className="item">
+                    <p>Categorie</p>
+                    <p>{genres[props.genre]}</p> 
                 </div>
             </div>
             <div className="box">

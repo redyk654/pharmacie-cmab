@@ -62,8 +62,9 @@ export default function EditerProd(props) {
                     <input type="text" name="pu_achat" value={props.pu_achat} onChange={handleChange} autoComplete="off" />
                 </div>
                 <div className="detail-item">
-                    <label htmlFor="">Genre</label>
+                    <label htmlFor="">Catégorie</label>
                     <select name="genre" id="genre" onChange={handleChange} value={props.genre}>
+                        <option value="">non répertorié</option>
                         <option value="generique">générique</option>
                         <option value="sp">spécialité</option>
                     </select>
